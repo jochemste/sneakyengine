@@ -1,3 +1,6 @@
+# Cmake Build files
+build
+
 # Prerequisites
 *.d
 
