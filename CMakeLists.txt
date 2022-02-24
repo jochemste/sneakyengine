@@ -17,3 +17,5 @@ if (NOT SDL2_FOUND)
 endif()
 
 add_subdirectory(src)
+
+install(TARGETS ${PROJECTNAME} DESTINATION ${${PROJECTNAME}_SOURCE_DIR}/bin)

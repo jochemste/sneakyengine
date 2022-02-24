@@ -23,7 +23,7 @@ cmake ..
 make
 ```
 
-This should result in the executable in ```<repo>/build/src/```, called *sneakyengine*
+This should result in the executable being created in ```<repo>/bin/```, called *sneakyengine*
 
 # Goal of the project
-The goal of this project is to make something fun and learn stuff while doing it. The intend is to eventually make a library out of to be used for other projects (possibly even with Python3 bindings).
+The goal of this project is to make something fun and learn stuff while doing it. The intend is to eventually make a library out of it to be used for other projects (possibly even with Python3 bindings, who knows).

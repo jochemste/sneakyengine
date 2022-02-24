@@ -1,5 +1,5 @@
 # Cmake Build files
-build
+build/
 
 # Prerequisites
 *.d
@@ -33,3 +33,4 @@ build
 *.exe
 *.out
 *.app
+bin/sneakyengine
