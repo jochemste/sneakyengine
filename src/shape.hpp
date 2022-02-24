@@ -1,0 +1,84 @@
+#ifndef SHAPE_HPP
+#define SHAPE_HPP
+
+#include "coordinates.hpp"
+
+#include <cmath>
+#include <vector>
+
+// @brief Base class for shapes
+class Shape{
+ public:
+  explicit Shape();
+  ~Shape();
+
+  
+  void move(int x_, int y_);
+  
+  std::vector<Coordinates>* getShape();
+  void getShape(std::vector<Coordinates>*& coords);
+  
+ protected:
+  std::vector<Coordinates>* coordinates;
+  
+ private:
+
+};
+
+class Circle: public Shape{
+ public:
+  Circle(int center_x, int center_y, int radius, bool solid=false): Shape(){
+    if (solid==true){
+      for(int x=center_x-radius; x<=center_x+radius; x++){
+	for( int y=center_y-radius; y<=center_y+radius; y++){
+	  if((std::pow(center_y-y, 2)+std::pow(center_x-x, 2)) <= std::pow(radius, 2)){
+	    coordinates->push_back(Coordinates(x, y, 0));
+	  }
+	}
+      }
+    } else {
+      for(double t=0; t<2*M_PI; t+=0.01){
+	coordinates->push_back(Coordinates((center_x + radius*std::cos(t)),
+					   (center_y + radius*std::sin(t)),
+					   0));
+      }
+    }
+  }
+
+private:
+  
+};
+
+class Rectangle: public Shape{
+public:
+  Rectangle(int left_x, int top_y, int width, int height, bool solid=false): Shape(){
+    // Define other extremes
+    int right_x=left_x+width;
+    int bottom_y=top_y+height;
+    
+    if (solid==true){ // Fill square
+      for(int x=left_x; x<=right_x; x++){
+	for(int y=top_y; y<=bottom_y; y++){
+	  coordinates->push_back(Coordinates(x, y, 0));
+	}
+      }
+      
+    }else{ // Create lines
+      // Top line and bottom line
+      for(int x=left_x; x<right_x; x++){
+	coordinates->push_back(Coordinates(x, top_y, 0));
+	coordinates->push_back(Coordinates(x, bottom_y, 0));
+      }
+      // Left line and right line
+      for(int y=top_y; y<bottom_y; y++){
+	coordinates->push_back(Coordinates(left_x, y, 0));
+	coordinates->push_back(Coordinates(right_x, y, 0));
+      }
+    }
+  }
+
+private:
+  
+};
+
+#endif
