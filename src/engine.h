@@ -1,49 +1,45 @@
 #ifndef ENGINE_H
 #define ENGINE_H
 
-#include "shape.hpp"
 #include "coordinates.hpp"
+#include "shape.hpp"
 
-#include <cmath>
 #include <SDL.h>
+#include <cmath>
 
-enum class WindowState {
-    OPEN,
-    CLOSED
-};
+enum class WindowState { OPEN, CLOSED };
 
-enum class EngineState {
-    RUNNING,
-    PAUSED,
-    STOPPED,
-    NOT_RUNNING
-};
+enum class EngineState { RUNNING, PAUSED, STOPPED, NOT_RUNNING };
 
-class Engine{
-  
+class Engine {
+
 public:
-    Engine();
-    //Engine(int height_, int width_);
-    ~Engine();
+  Engine();
+  // Engine(int height_, int width_);
+  ~Engine();
 
-    int run();
-    int stop();
+  const int run(const int framerate = 60);
+  int stop();
 
-    void openWindow(int height_, int width_);
-    void closeWindow();
-    
-    void drawCircle(int center_x, int center_y, int radius);
-    void drawShape(Shape& shape);
-    
+  void openWindow(int height_, int width_);
+  void closeWindow();
+
+  void drawCircle(int center_x, int center_y, int radius);
+  void drawShape(Shape &shape);
+
 private:
-    int height;
-    int width;
-    WindowState windowState = WindowState::CLOSED;
-    EngineState engineState = EngineState::NOT_RUNNING;
-    SDL_Renderer* renderer = NULL;
-    //Uint8* red,green,blue,alpha = NULL;
-    SDL_Window* window = NULL;
-    
+  // Uint32 time_left();
+
+  const Uint32 m_second;
+
+  Uint32 m_next_time;
+  int height;
+  int width;
+  WindowState windowState; // = WindowState::CLOSED;
+  EngineState engineState; // = EngineState::NOT_RUNNING;
+  SDL_Renderer *renderer;  // = NULL;
+  // Uint8* red,green,blue,alpha = NULL;
+  SDL_Window *window; // = NULL;
 };
 
 #endif

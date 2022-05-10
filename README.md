@@ -3,13 +3,13 @@
 Fun gaming/visualisation engine to keep (and improve) my C++ and mathematics knowledge.
 
 # Build
-This project uses cmake, so make sure you installed this (at the time of writing cmake version 3.19.6 is used).
+This project uses cmake, so make sure you installed this (at the time of writing cmake version 3.23.1 is used).
 You can check your cmake version with:
 ```
 cmake --version
 ```
 
-Also, make sure you have SDL2 installed on your system. Assuming you use a Linux (Debian based) system, install it using the following command:
+Also, make sure you have SDL2 installed on your system. Assuming you use a Linux (Debian based) system, install it using the following command (as root):
 ```
 apt update && apt install libsdl2-dev
 ```
