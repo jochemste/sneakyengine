@@ -2,6 +2,7 @@ set(SRCS main.cpp engine.cpp colour.cpp coordinates.cpp shape.cpp)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${${PROJECTNAME}_SOURCE_DIR}/bin)
 add_executable(${PROJECTNAME} ${SRCS})
+add_library(${PROJECTNAME}_lib STATIC ${SRCS})
 
 # For finding our SDL2 package!
 INCLUDE(FindPkgConfig)
