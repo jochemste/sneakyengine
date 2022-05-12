@@ -1,6 +1,9 @@
 # Cmake Build files
 build/
 
+# Callgrind files
+*callgrind.out*
+
 # Prerequisites
 *.d
 
