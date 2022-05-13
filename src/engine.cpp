@@ -1,4 +1,4 @@
-#include "engine.h"
+#include "engine.hpp"
 #include <bits/types/time_t.h>
 #include <iostream>
 
@@ -23,7 +23,7 @@ Engine::~Engine() {
 
 const int Engine::run(const int framerate) {
   SDL_Log("Starting run loop");
-  SDL_Event event;
+  SDL_Event *event = new SDL_Event;
   Uint32 starttime, time_left;
   const Uint32 frametime = m_second / framerate;
   SDL_Log("Frame time will be: %fs", double(frametime / 1000.0));
@@ -35,20 +35,28 @@ const int Engine::run(const int framerate) {
   Circle circle(x, y, r);
   Rectangle rect(x + r, y, 20, 30);
 
-  while (!(event.type == SDL_QUIT)) {
+  while (!(event->type == SDL_QUIT)) {
     starttime = SDL_GetTicks();
     SDL_RenderClear(renderer);
-    SDL_PollEvent(&event);
+    SDL_PollEvent(event);
     drawShape(circle);
     drawShape(rect);
     circle.move(1, 1);
 
     SDL_RenderPresent(renderer);
-    time_left = frametime - (SDL_GetTicks() - starttime);
-    // SDL_Log("Time left: %d", time_left);
-    if (time_left > 0)
-      SDL_Delay(10);
+    int(time_left) = frametime - (SDL_GetTicks() - starttime);
+
+    while (!(int(time_left) <= 0) && !(event->type == SDL_QUIT)) {
+      time_left = frametime - (SDL_GetTicks() - starttime);
+      SDL_PollEvent(event);
+    }
   }
+
+  if (event->type == SDL_QUIT) {
+    SDL_Log("Gracefully exiting");
+  }
+
+  delete event;
 
   return 0;
 }
@@ -100,13 +108,13 @@ void Engine::drawShape(Shape &shape) {
 
 /*
 Uint32 Engine::time_left() {
-  Uint32 now;
+Uint32 now;
 
-  now = SDL_GetTicks();
-  if (m_next_time <= now) {
-    return 0;
-  } else {
-    return m_next_time - now;
-  }
+now = SDL_GetTicks();
+if (m_next_time <= now) {
+  return 0;
+} else {
+  return m_next_time - now;
+}
 }
 */

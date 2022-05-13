@@ -1,5 +1,5 @@
 #include "colour.h"
-#include "engine.h"
+#include "engine.hpp"
 #include <iostream>
 
 int main(int argc, char **argv) {
@@ -8,7 +8,7 @@ int main(int argc, char **argv) {
 
   Engine engine;
   engine.openWindow(200, 400);
-  int res = engine.run(60);
+  int res = engine.run(10);
 
   if (res) {
     std::cout << "An error occurred. Error code: " << res << std::endl;

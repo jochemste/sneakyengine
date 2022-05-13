@@ -1,7 +1,21 @@
 #include "coordinates_tst.hpp"
 #include <vector>
 
-TEST_F(CoordinatesTest, InitWorks) {
+std::vector<Coordinates> *getRandomCoordVector() {
+  int loop = rand() % 500;
+  std::vector<Coordinates> *coordinates = new std::vector<Coordinates>;
+  std::vector<int> x, y;
+
+  for (int i = 0; i < loop; i++) {
+    x.push_back(rand() % 1000000);
+    y.push_back(rand() % 1000000);
+    coordinates->push_back(Coordinates(x.at(i), y.at(i), -1));
+  }
+
+  return coordinates;
+}
+
+TEST_F(CoordinatesTest, TestInit) {
   int one[3] = {1, 1, 1};
   int two[3] = {2, 3, 4};
   int three[3] = {-1000, 1023, -123};
@@ -37,7 +51,7 @@ TEST_F(CoordinatesTest, InitWorks) {
   ASSERT_NE(three[2] * -1231, c3.getZ());
 }
 
-TEST_F(CoordinatesTest, SetXWorks) {
+TEST_F(CoordinatesTest, TestSetX) {
   int x = 21;
   Coordinates c(x, 2, 3);
 
@@ -47,7 +61,7 @@ TEST_F(CoordinatesTest, SetXWorks) {
   EXPECT_EQ(x * 12, c.getX());
 }
 
-TEST_F(CoordinatesTest, SetYWorks) {
+TEST_F(CoordinatesTest, TestSetY) {
   int y = 21;
   Coordinates c(5, y, 3);
 
@@ -57,7 +71,7 @@ TEST_F(CoordinatesTest, SetYWorks) {
   EXPECT_EQ(y * 12, c.getY());
 }
 
-TEST_F(CoordinatesTest, SetZWorks) {
+TEST_F(CoordinatesTest, TestSetZ) {
   int z = 21;
   Coordinates c(2, 3, z);
 
@@ -67,7 +81,7 @@ TEST_F(CoordinatesTest, SetZWorks) {
   EXPECT_EQ(z * 12, c.getZ());
 }
 
-TEST_F(CoordinateMapTest, DefaultInitWorks) {
+TEST_F(CoordinateMapTest, TestDefaultInit) {
   CoordinateMap c;
   EXPECT_EQ(-1, c.getMinX());
   EXPECT_EQ(-1, c.getMinY());
@@ -75,7 +89,7 @@ TEST_F(CoordinateMapTest, DefaultInitWorks) {
   EXPECT_EQ(-1, c.getMaxY());
 }
 
-TEST_F(CoordinateMapTest, CoordInitWorks) {
+TEST_F(CoordinateMapTest, TestCoordInit) {
   int loop = rand() % 500;
   std::vector<Coordinates> *coordinates = new std::vector<Coordinates>;
   std::vector<int> x, y;
@@ -123,18 +137,8 @@ TEST_F(CoordinateMapTest, CoordVectorsAreCopiedProperly) {
 }
 
 TEST_F(CoordinateMapTest, TestCopyConstructor) {
-  int loop;
-  std::vector<Coordinates> *c1 = new std::vector<Coordinates>;
-  std::vector<Coordinates> *c2 = new std::vector<Coordinates>;
-
-  std::vector<int> x1, y1, x2, y2;
-
-  loop = rand() % 500;
-  for (int i = 0; i < loop; i++) {
-    x1.push_back(rand() % 1000000);
-    y1.push_back(rand() % 1000000);
-    c1->push_back(Coordinates(x1.at(i), y1.at(i), -1));
-  }
+  auto *c1 = getRandomCoordVector();
+  auto *c2 = getRandomCoordVector();
 
   CoordinateMap cm1(*c1);
   CoordinateMap cm2 = cm1;
@@ -147,26 +151,19 @@ TEST_F(CoordinateMapTest, TestCopyConstructor) {
   delete c2;
 }
 
+TEST_F(CoordinateMapTest, TestAddCoordinates) {
+  auto *c1 = getRandomCoordVector();
+  CoordinateMap cm;
+  cm.addCoordinates(*c1);
+
+  EXPECT_EQ(c1->size(), cm.size());
+
+  delete c1;
+}
+
 TEST_F(CoordinateMapTest, TestAdditionOperator) {
-  int loop;
-  std::vector<Coordinates> *c1 = new std::vector<Coordinates>;
-  std::vector<Coordinates> *c2 = new std::vector<Coordinates>;
-
-  std::vector<int> x1, y1, x2, y2;
-
-  loop = rand() % 500;
-  for (int i = 0; i < loop; i++) {
-    x1.push_back(rand() % 1000000);
-    y1.push_back(rand() % 1000000);
-    c1->push_back(Coordinates(x1.at(i), y1.at(i), -1));
-  }
-
-  loop = rand() % 500;
-  for (int i = 0; i < loop; i++) {
-    x2.push_back(rand() % 1000000);
-    y2.push_back(rand() % 1000000);
-    c2->push_back(Coordinates(x2.at(i), y2.at(i), -1));
-  }
+  auto *c1 = getRandomCoordVector();
+  auto *c2 = getRandomCoordVector();
 
   CoordinateMap cm1(*c1);
   CoordinateMap cm2(*c2);
@@ -187,4 +184,72 @@ TEST_F(CoordinateMapTest, TestAdditionOperator) {
 
   delete c1;
   delete c2;
+}
+
+TEST_F(CoordinateMapTest, TestIndexOperator) {
+  auto *c1 = getRandomCoordVector();
+
+  CoordinateMap cm(*c1);
+
+  int y1 = cm.end();
+  int y2 = cm.atIndex(-1);
+  int y3 = cm[-1];
+
+  EXPECT_EQ(y1, y2);
+  EXPECT_EQ(y1, y3);
+  EXPECT_EQ(y2, y3);
+
+  delete c1;
+}
+
+TEST_F(CoordinateMapTest, TestIsInMap) {
+  auto *c1 = getRandomCoordVector();
+  CoordinateMap cm(*c1);
+  cm.rmDuplicates();
+
+  // Check all current coordinates
+  for (const auto &el : *c1) {
+    EXPECT_EQ(true, cm.isInMap(el));
+  }
+
+  // Coordinate that exists
+  Coordinates testC(c1->at(c1->size() - 1).getX(),
+                    c1->at(c1->size() - 1).getY(), -1);
+  EXPECT_EQ(true, cm.isInMap(testC));
+
+  // X and Y value that exist in coordinate map
+  int x = c1->at(c1->size() - 2).getX();
+  int y = c1->at(c1->size() - 2).getY();
+  EXPECT_EQ(true, cm.isInMap(x, y));
+
+  // Coordinate that has non-existent X value and existing Y
+  Coordinates testC2(cm.getMaxX() + 1, cm.getMaxY(), -1);
+  EXPECT_EQ(false, cm.isInMap(testC2));
+
+  // Coordinate that has existing X value and non-existent Y
+  Coordinates testC3(cm.getMaxX(), cm.getMaxY() * 2, -1);
+  EXPECT_EQ(false, cm.isInMap(testC3));
+
+  // Negative values
+  Coordinates testC4(-1, -1, -1);
+  EXPECT_EQ(false, cm.isInMap(testC4));
+
+  delete c1;
+}
+
+TEST_F(CoordinateMapTest, TestRmDuplicates) {
+  auto *c1 = getRandomCoordVector();
+
+  // Create duplicate Coordinate
+  c1->push_back(c1->at(c1->size() - 1));
+
+  CoordinateMap cm(*c1);
+  cm.size();
+
+  cm.rmDuplicates();
+
+  ASSERT_NE(cm.size(), c1->size());
+  ASSERT_NE(cm.size(), 0);
+
+  delete c1;
 }

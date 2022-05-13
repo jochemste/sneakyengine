@@ -14,10 +14,10 @@ public:
   ~Shape();
 
   void move(int x_, int y_);
-  bool overlaps(const Shape &other);
+  bool overlaps(Shape &other);
 
   std::vector<Coordinates> *getShape();
-  void getShape(std::vector<Coordinates> *&coords);
+  void getShape(std::vector<Coordinates> &coords);
   const int getMinX() const;
   const int getMaxX() const;
   const int getMinY() const;
@@ -28,12 +28,14 @@ public:
 protected:
   const std::string id_;
   std::vector<Coordinates> *coordinates;
+  CoordinateMap *coordmap_;
   int minX_ = -1;
   int maxX_ = -1;
   int minY_ = -1;
   int maxY_ = -1;
 
 private:
+  bool coordsUpToDate;
 };
 
 class Circle : public Shape {
@@ -56,6 +58,7 @@ public:
                                            0));
       }
     }
+    coordmap_->setCoordinates(*coordinates);
   }
 
 private:
@@ -88,6 +91,7 @@ public:
         coordinates->push_back(Coordinates(right_x, y, 0));
       }
     }
+    coordmap_->setCoordinates(*coordinates);
   }
 
 private:

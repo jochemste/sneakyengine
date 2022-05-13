@@ -14,3 +14,5 @@ protected:
 class CoordinateMapTest : public ::testing::Test {
 protected:
 };
+
+std::vector<Coordinates> *getRandomCoordVector();

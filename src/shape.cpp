@@ -3,27 +3,38 @@
 #include <iostream>
 
 /// Default constructor
-Shape::Shape(const std::string id) : id_(id) {
+Shape::Shape(const std::string id) : id_(id), coordsUpToDate(false) {
   coordinates = new std::vector<Coordinates>;
+  coordmap_ = new CoordinateMap;
 }
 
 /// Default desctructor
-Shape::~Shape() { delete coordinates; }
+Shape::~Shape() {
+  delete coordinates;
+  delete coordmap_;
+}
 
 /// Move the shape by incrementing all the x coordinates by the provided x_ and
 /// the y by the provided y_
 /// @param x_ X value to increment all X values in the coordinate vector with
 /// @param y_ Y value to increment all Y values in the coordinate vector with
 void Shape::move(int x_, int y_) {
+  // coordmap_->move(x_, y_);
+  //*coordinates = coordmap_->getCoordinates();
+  coordsUpToDate = true;
+
   for (auto &el : *coordinates) {
     el.setX(el.getX() + x_);
     el.setY(el.getY() + y_);
   }
+
+  coordmap_->setCoordinates(*coordinates);
+  coordmap_->rmDuplicates();
 }
 
 /// Check if two shapes overlap with each other.
 /// @param other Pointer to another
-bool Shape::overlaps(const Shape &other) {
+bool Shape::overlaps(Shape &other) {
   if ((this->size() == 0) || (other.size() == 0))
     return false;
 
@@ -37,22 +48,42 @@ bool Shape::overlaps(const Shape &other) {
     return false;
   }
 
+  auto *coords = new std::vector<Coordinates>;
+  other.getShape(*coords);
+
+  for (const auto &el : *coords) {
+    if (coordmap_->isInMap(el))
+      return true;
+  }
+
   return false;
 }
 
 /// Get the shape as a vector of coordinates.
-std::vector<Coordinates> *Shape::getShape() { return coordinates; }
+std::vector<Coordinates> *Shape::getShape() { // return coordinates;
+  if (!coordsUpToDate) {
+    *coordinates = coordmap_->getCoordinates();
+    coordsUpToDate = true;
+  }
+  return coordinates;
+}
 
 /// Get the shape as a vector of coordinates, where the parameter will be filled
 /// with these coordinates
 /// @param coords Reference to a pointer of coordinates, which will hold the
 /// coordinates of the shape
-void Shape::getShape(std::vector<Coordinates> *&coords) {
-  coords = coordinates;
+void Shape::getShape(std::vector<Coordinates> &coords) {
+  if (!coordsUpToDate) {
+    *coordinates = coordmap_->getCoordinates();
+    coordsUpToDate = true;
+  }
+  coords = *coordinates;
 }
 
 /// Get the minimum X value in the vector of coordinates
 const int Shape::getMinX() const {
+  return coordmap_->getMinX();
+  /*
   // If no coordinates, return -1 to indicate an error
   if (!(coordinates->size() > 0)) {
     return -1;
@@ -73,11 +104,13 @@ const int Shape::getMinX() const {
     }
   }
 
-  return minX;
+  return minX;*/
 }
 
 /// Get the maximum X value in the vector of coordinates
 const int Shape::getMaxX() const {
+  return coordmap_->getMaxX();
+  /*
   // If no coordinates, return -1 to indicate an error
   if (!(coordinates->size() > 0)) {
     return -1;
@@ -97,11 +130,13 @@ const int Shape::getMaxX() const {
     }
   }
 
-  return maxX;
+  return maxX;*/
 }
 
 /// Get the minimum Y value in the vector of coordinates
 const int Shape::getMinY() const {
+  return coordmap_->getMinY();
+  /*
   // If no coordinates, return -1 to indicate an error
   if (!(coordinates->size() > 0)) {
     return -1;
@@ -122,11 +157,13 @@ const int Shape::getMinY() const {
     }
   }
 
-  return minY;
+  return minY;*/
 }
 
 /// Get the maximum Y value in the vector of coordinates
 const int Shape::getMaxY() const {
+  return coordmap_->getMaxY();
+  /*
   // If no coordinates, return -1 to indicate an error
   if (!(coordinates->size() > 0)) {
     return -1;
@@ -146,7 +183,7 @@ const int Shape::getMaxY() const {
     }
   }
 
-  return maxY;
+  return maxY;*/
 }
 
 /// Return the size of the coordinates
