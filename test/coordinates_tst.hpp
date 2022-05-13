@@ -3,6 +3,7 @@
 #include "../src/coordinates.hpp"
 
 #include <bits/stdc++.h>
+#include <iostream>
 #include <stdlib.h>
 #include <vector>
 

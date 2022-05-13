@@ -5,6 +5,8 @@
 #include <map>
 #include <vector>
 
+#include <iostream>
+
 class Coordinates {
 public:
   Coordinates(int, int, int);
@@ -28,6 +30,7 @@ class CoordinateMap {
 public:
   CoordinateMap();
   CoordinateMap(const std::vector<Coordinates> &coordinates);
+  CoordinateMap(const CoordinateMap &other);
   ~CoordinateMap();
 
   void addCoordinates(const std::vector<Coordinates> &coordinates);
@@ -43,12 +46,14 @@ public:
   const int getMaxZ() const { return maxZ_; }
 
   CoordinateMap &operator+=(const CoordinateMap &other);
+  CoordinateMap &operator=(const CoordinateMap &other);
   CoordinateMap operator+(const CoordinateMap &other);
   // friend CoordinateMap operator+(CoordinateMap &lhs, const CoordinateMap
   // &rhs);
 
 protected:
 private:
+  void clear();
   void sortMap();
   void rmDuplicates();
   void _setMinMaxXYZ(const int &x, const int &y, const int &z);

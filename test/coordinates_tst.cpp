@@ -122,6 +122,31 @@ TEST_F(CoordinateMapTest, CoordVectorsAreCopiedProperly) {
   delete coordinates;
 }
 
+TEST_F(CoordinateMapTest, TestCopyConstructor) {
+  int loop;
+  std::vector<Coordinates> *c1 = new std::vector<Coordinates>;
+  std::vector<Coordinates> *c2 = new std::vector<Coordinates>;
+
+  std::vector<int> x1, y1, x2, y2;
+
+  loop = rand() % 500;
+  for (int i = 0; i < loop; i++) {
+    x1.push_back(rand() % 1000000);
+    y1.push_back(rand() % 1000000);
+    c1->push_back(Coordinates(x1.at(i), y1.at(i), -1));
+  }
+
+  CoordinateMap cm1(*c1);
+  CoordinateMap cm2 = cm1;
+
+  ASSERT_NE(&cm1, &cm2);
+
+  EXPECT_EQ(cm1.size(), cm2.size());
+
+  delete c1;
+  delete c2;
+}
+
 TEST_F(CoordinateMapTest, TestAdditionOperator) {
   int loop;
   std::vector<Coordinates> *c1 = new std::vector<Coordinates>;
@@ -153,9 +178,12 @@ TEST_F(CoordinateMapTest, TestAdditionOperator) {
   cm1 += cm2;
   EXPECT_EQ(cm1.size(), cm1_size + cm2.size());
 
-  // CoordinateMap cm3;
-  // cm3 = cm1 + cm2;
-  // EXPECT_EQ(cm3.size(), cm1.size() + cm2.size());
+  CoordinateMap cm3 = cm1 + cm2;
+  EXPECT_EQ(cm3.size(), cm1.size() + cm2.size());
+
+  int cm3_size = cm3.size();
+  cm3 = cm1 + cm3;
+  EXPECT_EQ(cm3.size(), cm1.size() + cm3_size);
 
   delete c1;
   delete c2;

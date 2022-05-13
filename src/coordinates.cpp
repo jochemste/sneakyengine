@@ -20,6 +20,12 @@ CoordinateMap::CoordinateMap(const std::vector<Coordinates> &coordinates)
   this->addCoordinates(coordinates);
 }
 
+CoordinateMap::CoordinateMap(const CoordinateMap &other) : CoordinateMap() {
+  this->clear();
+  size_ = 0;
+  this->addCoordinates(other.getCoordinates());
+}
+
 CoordinateMap::~CoordinateMap() { delete coordmap_; }
 
 void CoordinateMap::addCoordinates(
@@ -60,18 +66,27 @@ CoordinateMap &CoordinateMap::operator+=(const CoordinateMap &other) {
   return *this;
 }
 
+CoordinateMap &CoordinateMap::operator=(const CoordinateMap &other) {
+  this->clear();
+  this->addCoordinates(other.getCoordinates());
+  return *this;
+}
+
 CoordinateMap CoordinateMap::operator+(const CoordinateMap &other) {
   CoordinateMap c(this->getCoordinates());
   c.addCoordinates(other.getCoordinates());
   return c;
 }
 
-/*
-CoordinateMap operator+(CoordinateMap &lhs, const CoordinateMap &rhs) {
-  lhs += rhs;
-  return lhs;
+void CoordinateMap::clear() {
+  coordmap_->clear();
+  minX_ = -1;
+  minY_ = -1;
+  maxX_ = -1;
+  maxY_ = -1;
+  size_ = 0;
 }
-*/
+
 /// Sort the vectors in the map
 void CoordinateMap::sortMap() {
   for (auto &el : *coordmap_) {
