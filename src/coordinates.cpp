@@ -58,6 +58,11 @@ void CoordinateMap::setCoordinates(
 
 void CoordinateMap::addCoordinates(
     const std::vector<Coordinates> &coordinates) {
+  // Set sorted_ to false if coordinates are available, so map will be sorted
+  // once coordinates are added
+  if (coordinates.size() > 0)
+    sorted_ = false;
+
   for (const auto &el : coordinates) {
     if (coordmap_->find(el.getY()) == coordmap_->end()) {
       // If Y is not found as key in the map, insert the key (Y) with the first
@@ -148,12 +153,20 @@ const int CoordinateMap::end() const {
   return it->first;
 }
 
+void CoordinateMap::erase(const Coordinates &coord) {
+  if (this->isInMap(coord)) {
+    auto it = this->findInY(coord.getX(), coord.getY());
+    if (it != coordmap_->at(coord.getY()).end())
+      coordmap_->at(coord.getY()).erase(it);
+  }
+}
+
 const bool CoordinateMap::isInMapY(const int y) const {
   return (coordmap_->find(y) != coordmap_->end());
 }
 
-const bool CoordinateMap::isInMap(const int x, const int y) const {
-  return this->isInMap(Coordinates(x, y, -1));
+const bool CoordinateMap::isInMap(const int x, const int y, const int z) const {
+  return this->isInMap(Coordinates(x, y, z));
 }
 
 const bool CoordinateMap::isInMap(const Coordinates &coord) const {
@@ -178,6 +191,19 @@ CoordinateMap &CoordinateMap::operator+=(const CoordinateMap &other) {
   return *this;
 }
 
+CoordinateMap &CoordinateMap::operator+=(const Coordinates &coord) {
+  std::vector<Coordinates> c;
+  c.push_back(coord);
+  this->addCoordinates(c);
+  return *this;
+}
+
+CoordinateMap &
+CoordinateMap::operator+=(const std::vector<Coordinates> &coords) {
+  this->addCoordinates(coords);
+  return *this;
+}
+
 CoordinateMap &CoordinateMap::operator=(const CoordinateMap &other) {
   this->clear();
   this->addCoordinates(other.getCoordinates());
@@ -185,15 +211,42 @@ CoordinateMap &CoordinateMap::operator=(const CoordinateMap &other) {
 }
 
 CoordinateMap CoordinateMap::operator+(const CoordinateMap &other) {
-  CoordinateMap c(this->getCoordinates());
-  c.addCoordinates(other.getCoordinates());
-  return c;
+  CoordinateMap cm(this->getCoordinates());
+  cm.addCoordinates(other.getCoordinates());
+  return cm;
+}
+
+CoordinateMap CoordinateMap::operator+(const Coordinates &coord) {
+  CoordinateMap cm(this->getCoordinates());
+  std::vector<Coordinates> c1;
+  c1.push_back(coord);
+  cm.addCoordinates(c1);
+  return cm;
+}
+CoordinateMap CoordinateMap::operator+(const std::vector<Coordinates> &coords) {
+  CoordinateMap cm(this->getCoordinates());
+  cm.addCoordinates(coords);
+  return cm;
 }
 
 /// Allow access to the elements of the coordinate map. Returns a row at the
 /// provided Y value
 const int CoordinateMap::operator[](const int &index) const {
   return this->atIndex(index);
+}
+
+std::vector<int>::iterator CoordinateMap::findInY(const int x, const int y) {
+  if (this->isInMapY(y)) {
+    int findX = x;
+    int i = 0;
+    for (auto it = coordmap_->at(y).begin(); it != coordmap_->at(y).end();
+         ++it, i++) {
+      if (coordmap_->at(y).at(i) == findX)
+        return it;
+    }
+  }
+
+  return coordmap_->at(y).end();
 }
 
 /// Clear the coordinate map and reset min/max values and the size counter

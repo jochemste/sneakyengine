@@ -47,8 +47,10 @@ public:
   const int atIndex(const int &index) const;
   const int end() const;
 
+  void erase(const Coordinates &coord);
+
   const bool isInMapY(const int y) const;
-  const bool isInMap(const int x, const int y) const;
+  const bool isInMap(const int x, const int y, const int z = -1) const;
   const bool isInMap(const Coordinates &coord) const;
 
   const int getMinX() const { return minX_; }
@@ -61,12 +63,17 @@ public:
   void rmDuplicates();
 
   CoordinateMap &operator+=(const CoordinateMap &other);
+  CoordinateMap &operator+=(const Coordinates &coord);
+  CoordinateMap &operator+=(const std::vector<Coordinates> &coords);
   CoordinateMap &operator=(const CoordinateMap &other);
   CoordinateMap operator+(const CoordinateMap &other);
+  CoordinateMap operator+(const Coordinates &coord);
+  CoordinateMap operator+(const std::vector<Coordinates> &coords);
   const int operator[](const int &index) const;
 
 protected:
 private:
+  std::vector<int>::iterator findInY(const int x, const int y);
   void clear();
   void sortMap();
   void updateSize();

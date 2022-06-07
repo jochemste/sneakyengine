@@ -244,7 +244,7 @@ TEST_F(CoordinateMapTest, TestRmDuplicates) {
   c1->push_back(c1->at(c1->size() - 1));
 
   CoordinateMap cm(*c1);
-  cm.size();
+  // cm.size();
 
   cm.rmDuplicates();
 
@@ -252,4 +252,92 @@ TEST_F(CoordinateMapTest, TestRmDuplicates) {
   ASSERT_NE(cm.size(), 0);
 
   delete c1;
+}
+
+TEST_F(CoordinateMapTest, TestOperatorPLUSCoordinateMap) {
+  auto *c1 = getRandomCoordVector();
+  auto *c2 = getRandomCoordVector();
+
+  CoordinateMap cm1(*c1);
+  CoordinateMap cm2(*c2);
+  cm1.rmDuplicates();
+  cm2.rmDuplicates();
+
+  CoordinateMap cm3 = cm1 + cm2;
+
+  EXPECT_EQ(cm3.size(), cm1.size() + cm2.size());
+  ASSERT_NE(cm3.size(), 0);
+
+  delete c1;
+  delete c2;
+}
+
+TEST_F(CoordinateMapTest, TestOperatorPLUSISCoordinateMap) {
+  auto *c1 = getRandomCoordVector();
+  auto *c2 = getRandomCoordVector();
+
+  CoordinateMap cm1(*c1);
+  CoordinateMap cm2(*c2);
+  cm1.rmDuplicates();
+  cm2.rmDuplicates();
+
+  int ogsize1 = cm1.size();
+  int ogsize2 = cm2.size();
+
+  cm1 += cm2;
+
+  EXPECT_EQ(cm1.size(), ogsize1 + ogsize2);
+  EXPECT_EQ(cm1.size() - ogsize2, ogsize1);
+  EXPECT_EQ(cm2.size(), ogsize2);
+  ASSERT_NE(cm1.size(), 0);
+  ASSERT_NE(cm2.size(), 0);
+
+  delete c1;
+  delete c2;
+}
+
+TEST_F(CoordinateMapTest, TestOperatorPLUSISCoordinates) {
+  auto *c1 = getRandomCoordVector();
+  auto *c2 = getRandomCoordVector();
+
+  CoordinateMap cm(*c1);
+  cm.rmDuplicates();
+
+  int originalsize = cm.size();
+
+  Coordinates coord(10, 10, -1);
+
+  cm += coord;
+
+  EXPECT_EQ(cm.size(), originalsize + 1);
+  ASSERT_NE(cm.size(), 0);
+
+  delete c1;
+  delete c2;
+}
+
+TEST_F(CoordinateMapTest, TestOperatorPLUSISCoordinateVector) {
+  auto *c1 = getRandomCoordVector();
+  auto *c2 = getRandomCoordVector();
+
+  CoordinateMap cm(*c1);
+  cm.rmDuplicates();
+
+  int originalsize = cm.size();
+
+  cm += *c2;
+
+  EXPECT_EQ(cm.size(), originalsize + c2->size());
+  ASSERT_NE(cm.size(), 0);
+
+  delete c1;
+  delete c2;
+}
+
+TEST_F(CoordinateMapTest, TestErase) {
+  auto *c = getRandomCoordVector();
+
+  CoordinateMap cm(*c);
+
+  delete c;
 }
