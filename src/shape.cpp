@@ -1,4 +1,5 @@
 #include "shape.hpp"
+#include "coordinates.hpp"
 
 #include <iostream>
 
@@ -6,6 +7,13 @@
 Shape::Shape(const std::string id) : id_(id), coordsUpToDate(false) {
   coordinates = new std::vector<Coordinates>;
   coordmap_ = new CoordinateMap;
+}
+
+Shape::Shape(CoordinateMap *cm, const std::string id) : Shape(id) {
+  coordmap_ = cm;
+  coordmap_->rmDuplicates();
+  *coordinates = coordmap_->getCoordinates();
+  coordsUpToDate = true;
 }
 
 /// Default desctructor
@@ -19,17 +27,9 @@ Shape::~Shape() {
 /// @param x_ X value to increment all X values in the coordinate vector with
 /// @param y_ Y value to increment all Y values in the coordinate vector with
 void Shape::move(int x_, int y_) {
-  // coordmap_->move(x_, y_);
-  //*coordinates = coordmap_->getCoordinates();
+  coordmap_->move(Coordinates(x_, y_, 0));
+  *coordinates = coordmap_->getCoordinates();
   coordsUpToDate = true;
-
-  for (auto &el : *coordinates) {
-    el.setX(el.getX() + x_);
-    el.setY(el.getY() + y_);
-  }
-
-  coordmap_->setCoordinates(*coordinates);
-  coordmap_->rmDuplicates();
 }
 
 /// Check if two shapes overlap with each other.
@@ -78,6 +78,15 @@ void Shape::getShape(std::vector<Coordinates> &coords) {
     coordsUpToDate = true;
   }
   coords = *coordinates;
+}
+
+/// @brief Get the shape as a CoordinateMap
+CoordinateMap *Shape::getMap() {
+  if (!coordsUpToDate) {
+    *coordinates = coordmap_->getCoordinates();
+    coordsUpToDate = true;
+  }
+  return coordmap_;
 }
 
 /// Get the minimum X value in the vector of coordinates

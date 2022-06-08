@@ -11,6 +11,7 @@
 class Shape {
 public:
   explicit Shape(const std::string id = "none");
+  explicit Shape(CoordinateMap *cm, const std::string id = "none");
   ~Shape();
 
   void move(int x_, int y_);
@@ -18,6 +19,7 @@ public:
 
   std::vector<Coordinates> *getShape();
   void getShape(std::vector<Coordinates> &coords);
+  CoordinateMap *getMap();
   const int getMinX() const;
   const int getMaxX() const;
   const int getMinY() const;

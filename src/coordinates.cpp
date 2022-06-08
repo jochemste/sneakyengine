@@ -1,7 +1,15 @@
 #include "coordinates.hpp"
+#include <exception>
+#include <sstream>
+#include <stdexcept>
 #include <vector>
 
 Coordinates::Coordinates(int x_, int y_, int z_) : x(x_), y(y_), z(z_) {}
+Coordinates::Coordinates(const Coordinates &other) {
+  x = other.getX();
+  y = other.getY();
+  z = other.getZ();
+}
 Coordinates::~Coordinates() {}
 
 const int Coordinates::getX() const { return x; }
@@ -28,10 +36,68 @@ int &Coordinates::operator[](const int &index) {
   }
 }
 
+Coordinates &Coordinates::operator=(const Coordinates &other) {
+  this->x = other.getX();
+  this->y = other.getY();
+  this->z = other.getZ();
+  return *this;
+}
+
+bool Coordinates::operator==(const Coordinates &other) {
+  return ((x == other.getX()) && (y == other.getY()) && (z == other.getZ()));
+}
+
 Coordinates &Coordinates::operator+=(const Coordinates &other) {
   this->x += other.getX();
   this->y += other.getY();
+  this->z += other.getZ();
   return *this;
+}
+
+Coordinates &Coordinates::operator+=(const int n) {
+  this->x += n;
+  this->y += n;
+  this->z += n;
+  return *this;
+}
+
+Coordinates &Coordinates::operator++(const int n) {
+  x++;
+  y++;
+  z++;
+  return *this;
+}
+
+Coordinates &Coordinates::operator-=(const Coordinates &other) {
+  this->x -= other.getX();
+  this->y -= other.getY();
+  this->z -= other.getZ();
+  return *this;
+}
+
+Coordinates &Coordinates::operator-=(const int n) {
+  this->x -= n;
+  this->y -= n;
+  this->z -= n;
+  return *this;
+}
+
+Coordinates &Coordinates::operator--(const int n) {
+  x--;
+  y--;
+  z--;
+  return *this;
+}
+
+Coordinates Coordinates::operator+(const Coordinates &rh) {
+  Coordinates c(*this);
+  c += rh;
+  return c;
+}
+Coordinates Coordinates::operator-(const Coordinates &rh) {
+  Coordinates c(*this);
+  c -= rh;
+  return c;
 }
 
 CoordinateMap::CoordinateMap()
@@ -64,47 +130,58 @@ void CoordinateMap::addCoordinates(
     sorted_ = false;
 
   for (const auto &el : coordinates) {
+    // std::cout << "add coords before " << std::string(el) << std::endl;
     if (coordmap_->find(el.getY()) == coordmap_->end()) {
       // If Y is not found as key in the map, insert the key (Y) with the first
       // X value
       coordmap_->insert(
           std::pair<int, std::vector<int>>(el.getY(), {el.getX()}));
+
     } else {
       // If Y is found as key in the map, append the X to the vector
       coordmap_->at(el.getY()).push_back(el.getX());
     }
 
-    // size_++;
+    // std::cout << "add coords after " << std::string(el) << std::endl;
     this->_setMinMaxXYZ(el.getX(), el.getY(), el.getZ());
   }
+
   this->updateSize();
   this->sortMap();
 }
 
+/// Get the coordinates in the CoordinateMap as a vector of coordinates
+/// @returns A std::vector<Coordinates>
 std::vector<Coordinates> CoordinateMap::getCoordinates() const {
   std::vector<Coordinates> coordinates;
 
   for (const auto &el : *coordmap_) {
     for (const auto &x : el.second) {
-      coordinates.push_back(Coordinates(el.first, x, -1));
+      coordinates.push_back(Coordinates(x, el.first, -1));
     }
   }
 
   return coordinates;
 }
 
-void CoordinateMap::move(int x, int y) {
-  // auto newMap = *coordmap_;
+/// Move the entire CoordinateMap by x and y
+/// @param x The nr of X positions to move the map
+/// @param y The nr of Y positions to move the map
+/// @param z The nr of Z positions to move the map
+void CoordinateMap::move(int x, int y, int z) {
+  minX_ = -1;
+  minY_ = -1;
+  maxX_ = -1;
+  maxY_ = -1;
   auto coords = this->getCoordinates();
   this->clear();
 
   for (auto &el : coords) {
-    el += Coordinates(x, y, -1);
-    // el.setX(el.getX() + x);
-    // el.setY(el.getY() + y);
+    el += Coordinates(x, y, z);
+    this->_setMinMaxXYZ(el.getX(), el.getY(), el.getZ());
   }
 
-  this->setCoordinates(coords);
+  this->addCoordinates(coords);
 }
 
 /// Access vectors of X values by reference of Y values.
@@ -120,9 +197,11 @@ std::vector<int> &CoordinateMap::at(const int &y) const {
 /// Access rows in the coordinate map. Allows out of bounds indexes, by
 /// performing modulus operations on it to always ensure the index is within
 /// range. Negative indexes are also allowed, where -1 will access the last
-/// element for example
+/// element for example. Will throw a range_error when unexpected behaviour
+/// occurs.
 /// @param index Reference to the index value, used to specify the index of the
-/// row (not the actual Y value which can be gotten with this->at(y))
+/// row (not the actual Y value which can be retrieved with this->at(y))
+/// @returns The integer value of the Y at the given index.
 const int CoordinateMap::atIndex(const int &index) const {
   int i = index; // Since index is constant, copy it
 
@@ -138,14 +217,32 @@ const int CoordinateMap::atIndex(const int &index) const {
   if (i >= this->size())
     i %= this->size();
 
-  int ctr = 0;
-  for (std::map<int, std::vector<int>>::iterator it = coordmap_->begin();
-       it != coordmap_->end(); ++it) {
-    if (ctr++ == i)
-      return it->first;
+  // Determine iterator directions by determining whether i is closer to the end
+  // of the map or to the start
+  if ((this->size() - i) < (this->size() / 2)) {
+    // i is closer to end of map, so reverse loop
+    int ctr = this->size() - 1;
+    for (std::map<int, std::vector<int>>::iterator it = --coordmap_->end();
+         it != --coordmap_->begin(); --it) {
+      if (ctr-- == i) {
+        return it->first;
+      }
+    }
+  } else {
+    // i is closer to start of map, so forward loop
+    int ctr = 0;
+    for (std::map<int, std::vector<int>>::iterator it = coordmap_->begin();
+         it != coordmap_->end(); ++it) {
+      if (ctr++ == i) {
+        return it->first;
+      }
+    }
   }
 
-  return -1;
+  std::stringstream ss;
+  ss << "Could not determine element for given index: " << i
+     << " while size is " << this->size();
+  throw std::range_error(ss.str());
 }
 
 const int CoordinateMap::end() const {
@@ -153,12 +250,25 @@ const int CoordinateMap::end() const {
   return it->first;
 }
 
-void CoordinateMap::erase(const Coordinates &coord) {
+void CoordinateMap::erase(const Coordinates &coord, const bool updateSize) {
   if (this->isInMap(coord)) {
+    // std::cout << "ISINMAP" << std::endl;
     auto it = this->findInY(coord.getX(), coord.getY());
     if (it != coordmap_->at(coord.getY()).end())
       coordmap_->at(coord.getY()).erase(it);
+  } else {
+    // std::cout << "TEST" << std::endl;
   }
+
+  if (updateSize)
+    this->updateSize();
+}
+
+void CoordinateMap::erase(const std::vector<Coordinates> &coords) {
+  for (auto &coord : coords)
+    this->erase(coord, false);
+
+  this->updateSize();
 }
 
 const bool CoordinateMap::isInMapY(const int y) const {
@@ -204,6 +314,22 @@ CoordinateMap::operator+=(const std::vector<Coordinates> &coords) {
   return *this;
 }
 
+CoordinateMap &CoordinateMap::operator-=(const CoordinateMap &other) {
+  this->erase(other.getCoordinates());
+  return *this;
+}
+
+CoordinateMap &CoordinateMap::operator-=(const Coordinates &coord) {
+  this->erase(coord);
+  return *this;
+}
+
+CoordinateMap &
+CoordinateMap::operator-=(const std::vector<Coordinates> &coords) {
+  this->erase(coords);
+  return *this;
+}
+
 CoordinateMap &CoordinateMap::operator=(const CoordinateMap &other) {
   this->clear();
   this->addCoordinates(other.getCoordinates());
@@ -212,20 +338,46 @@ CoordinateMap &CoordinateMap::operator=(const CoordinateMap &other) {
 
 CoordinateMap CoordinateMap::operator+(const CoordinateMap &other) {
   CoordinateMap cm(this->getCoordinates());
-  cm.addCoordinates(other.getCoordinates());
+  // cm.addCoordinates(other.getCoordinates());
+  cm += other;
   return cm;
 }
 
 CoordinateMap CoordinateMap::operator+(const Coordinates &coord) {
   CoordinateMap cm(this->getCoordinates());
-  std::vector<Coordinates> c1;
-  c1.push_back(coord);
-  cm.addCoordinates(c1);
+  cm += coord;
+  // std::vector<Coordinates> c1;
+  // c1.push_back(coord);
+  // cm.addCoordinates(c1);
   return cm;
 }
 CoordinateMap CoordinateMap::operator+(const std::vector<Coordinates> &coords) {
   CoordinateMap cm(this->getCoordinates());
-  cm.addCoordinates(coords);
+  cm += coords;
+  // cm.addCoordinates(coords);
+  return cm;
+}
+
+CoordinateMap CoordinateMap::operator-(const CoordinateMap &other) {
+  CoordinateMap cm(this->getCoordinates());
+  cm -= other;
+  // cm.erase(other.getCoordinates());
+  return cm;
+}
+
+CoordinateMap CoordinateMap::operator-(const Coordinates &coord) {
+  CoordinateMap cm(this->getCoordinates());
+  // cm.erase(coord);
+  cm -= coord;
+  return cm;
+}
+CoordinateMap CoordinateMap::operator-(const std::vector<Coordinates> &coords) {
+  CoordinateMap cm(this->getCoordinates());
+  // std::cout << cm.size() << std::endl;
+  cm -= coords;
+  // cm.erase(coords);
+  // std::cout << cm.size() << std::endl;
+  cm.updateSize();
   return cm;
 }
 
@@ -288,10 +440,30 @@ void CoordinateMap::rmDuplicates() {
   this->updateSize();
 }
 
+void CoordinateMap::clean() {
+  CoordinateMap cm_temp = *this;
+  this->clear();
+  *this = cm_temp;
+
+  this->rmDuplicates();
+  this->sortMap();
+  this->updateSize();
+}
+
 void CoordinateMap::updateSize() {
   size_ = 0;
   for (const auto &el : *coordmap_) {
     size_ += el.second.size();
+  }
+}
+
+void CoordinateMap::updateMinMax() {
+  minX_ = -1;
+  maxX_ = -1;
+  minY_ = -1;
+  maxY_ = -1;
+  for (const auto &el : this->getCoordinates()) {
+    this->_setMinMaxXYZ(el.getX(), el.getY(), el.getZ());
   }
 }
 

@@ -6,10 +6,12 @@
 #include <vector>
 
 #include <iostream>
+#include <sstream>
 
 class Coordinates {
 public:
   Coordinates(int, int, int);
+  Coordinates(const Coordinates &other);
   ~Coordinates();
 
   const int getX() const;
@@ -21,7 +23,21 @@ public:
   void setZ(int z_);
 
   int &operator[](const int &index);
+  Coordinates &operator=(const Coordinates &other);
+  bool operator==(const Coordinates &other);
   Coordinates &operator+=(const Coordinates &other);
+  Coordinates &operator+=(const int n);
+  Coordinates &operator++(const int n);
+  Coordinates &operator-=(const Coordinates &other);
+  Coordinates &operator-=(const int n);
+  Coordinates &operator--(const int n);
+  Coordinates operator+(const Coordinates &rh);
+  Coordinates operator-(const Coordinates &rh);
+  operator std::string() const {
+    std::stringstream ss;
+    ss << "{" << x << ", " << y << ", " << z << "}";
+    return ss.str();
+  };
 
 private:
   int x;
@@ -40,14 +56,17 @@ public:
   void addCoordinates(const std::vector<Coordinates> &coordinates);
   std::vector<Coordinates> getCoordinates() const;
 
-  void move(Coordinates coord) { this->move(coord.getX(), coord.getX()); }
-  void move(int x, int y);
+  void move(Coordinates coord) {
+    this->move(coord.getX(), coord.getY(), coord.getZ());
+  }
+  void move(int x, int y, int z = -1);
   const int size() const { return size_; };
   std::vector<int> &at(const int &y) const;
   const int atIndex(const int &index) const;
   const int end() const;
 
-  void erase(const Coordinates &coord);
+  void erase(const Coordinates &coord, const bool updateSize = true);
+  void erase(const std::vector<Coordinates> &coords);
 
   const bool isInMapY(const int y) const;
   const bool isInMap(const int x, const int y, const int z = -1) const;
@@ -61,14 +80,21 @@ public:
   const int getMaxZ() const { return maxZ_; }
 
   void rmDuplicates();
+  void clean();
 
   CoordinateMap &operator+=(const CoordinateMap &other);
   CoordinateMap &operator+=(const Coordinates &coord);
   CoordinateMap &operator+=(const std::vector<Coordinates> &coords);
+  CoordinateMap &operator-=(const CoordinateMap &other);
+  CoordinateMap &operator-=(const Coordinates &coord);
+  CoordinateMap &operator-=(const std::vector<Coordinates> &coords);
   CoordinateMap &operator=(const CoordinateMap &other);
   CoordinateMap operator+(const CoordinateMap &other);
   CoordinateMap operator+(const Coordinates &coord);
   CoordinateMap operator+(const std::vector<Coordinates> &coords);
+  CoordinateMap operator-(const CoordinateMap &other);
+  CoordinateMap operator-(const Coordinates &coord);
+  CoordinateMap operator-(const std::vector<Coordinates> &coords);
   const int operator[](const int &index) const;
 
 protected:
@@ -77,6 +103,7 @@ private:
   void clear();
   void sortMap();
   void updateSize();
+  void updateMinMax();
   void _setMinMaxXYZ(const int &x, const int &y, const int &z);
 
   std::map<int, std::vector<int>> *coordmap_; // Map of Y rows of X values

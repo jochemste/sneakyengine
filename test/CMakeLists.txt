@@ -1,5 +1,5 @@
 set(EXEC_TST ${PROJECTNAME}_tst)
-set(TST_SRCS main.cpp coordinates_tst.cpp shape_tst.cpp)
+set(TST_SRCS main.cpp coordinates_tst.cpp shape_tst.cpp utils.cpp)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${${PROJECTNAME}_SOURCE_DIR}/bin)
 
 project(${EXEC_TST})

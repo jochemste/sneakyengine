@@ -2,6 +2,8 @@
 
 #include "../src/shape.hpp"
 
+#include <iostream>
+
 class ShapeTest : public ::testing::Test {
 protected:
 };
