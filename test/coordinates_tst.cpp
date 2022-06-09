@@ -109,6 +109,19 @@ TEST_F(CoordinatesTest, AssignOperatorWorks) {
   EXPECT_EQ(c1.getZ(), c2.getZ());
 }
 
+// ==
+TEST_F(CoordinatesTest, EqualityOperatorWorks) {
+  Coordinates c1 = getRandomCoordinates();
+  Coordinates c2 = getRandomCoordinates();
+
+  if (c1.getX() == c2.getX() && c1.getY() == c2.getY() &&
+      c1.getZ() == c2.getZ()) {
+    EXPECT_EQ(c1 == c2, true);
+  } else {
+    EXPECT_EQ(c1 == c2, false);
+  }
+}
+
 // +=
 TEST_F(CoordinatesTest, AddAssignOperatorWorks) {
   Coordinates c1 = getRandomCoordinates();
@@ -200,7 +213,7 @@ TEST_F(CoordinatesTest, PrefixIncrementOperatorWorks) {
 }
 
 // -=
-TEST_F(CoordinatesTest, TestSubtractAssignOperator) {
+TEST_F(CoordinatesTest, SubtractAssignOperatorWorks) {
   Coordinates c1 = getRandomCoordinates();
   Coordinates c2 = getRandomCoordinates();
 
@@ -229,31 +242,8 @@ TEST_F(CoordinatesTest, TestSubtractAssignOperator) {
   EXPECT_EQ(c2.getZ(), z2 - n);
 }
 
-// +
-TEST_F(CoordinatesTest, TestAddOperator) {
-  Coordinates c1 = getRandomCoordinates();
-  Coordinates c2 = getRandomCoordinates();
-
-  Coordinates c3 = c1 + c2;
-
-  EXPECT_EQ(c3.getX(), c1.getX() + c2.getX());
-  EXPECT_EQ(c3.getX(), c1.getX() + c2.getX());
-  EXPECT_EQ(c3.getX(), c1.getX() + c2.getX());
-}
-
-// -
-TEST_F(CoordinatesTest, TestSubtractOperator) {
-  Coordinates c1 = getRandomCoordinates();
-  Coordinates c2 = getRandomCoordinates();
-
-  Coordinates c3 = c1 - c2;
-
-  EXPECT_EQ(c3.getX(), c1.getX() - c2.getX());
-  EXPECT_EQ(c3.getX(), c1.getX() - c2.getX());
-  EXPECT_EQ(c3.getX(), c1.getX() - c2.getX());
-}
-
-TEST_F(CoordinatesTest, TestDECR) {
+// Postfix --
+TEST_F(CoordinatesTest, PostfixSubtractOperatorWorks) {
   Coordinates c1 = getRandomCoordinates();
   Coordinates c2 = getRandomCoordinates();
 
@@ -282,16 +272,58 @@ TEST_F(CoordinatesTest, TestDECR) {
   EXPECT_EQ(c2.getZ(), z2 - incr);
 }
 
-TEST_F(CoordinatesTest, TestEQ) {
+// Prefix --
+TEST_F(CoordinatesTest, PrefixSubtractOperatorWorks) {
   Coordinates c1 = getRandomCoordinates();
   Coordinates c2 = getRandomCoordinates();
 
-  if (c1.getX() == c2.getX() && c1.getY() == c2.getY() &&
-      c1.getZ() == c2.getZ()) {
-    EXPECT_EQ(c1 == c2, true);
-  } else {
-    EXPECT_EQ(c1 == c2, false);
-  }
+  int x1, y1, z1;
+  x1 = c1.getX();
+  y1 = c1.getY();
+  z1 = c1.getZ();
+
+  int x2, y2, z2;
+  x2 = c2.getX();
+  y2 = c2.getY();
+  z2 = c2.getZ();
+
+  --c1;
+
+  EXPECT_EQ(c1.getX(), x1 - 1);
+  EXPECT_EQ(c1.getY(), y1 - 1);
+  EXPECT_EQ(c1.getZ(), z1 - 1);
+
+  int incr = getRandomInt();
+  for (int i = 0; i < incr; i++)
+    --c2;
+
+  EXPECT_EQ(c2.getX(), x2 - incr);
+  EXPECT_EQ(c2.getY(), y2 - incr);
+  EXPECT_EQ(c2.getZ(), z2 - incr);
+}
+
+// +
+TEST_F(CoordinatesTest, AddOperatorWorks) {
+  Coordinates c1 = getRandomCoordinates();
+  Coordinates c2 = getRandomCoordinates();
+
+  Coordinates c3 = c1 + c2;
+
+  EXPECT_EQ(c3.getX(), c1.getX() + c2.getX());
+  EXPECT_EQ(c3.getX(), c1.getX() + c2.getX());
+  EXPECT_EQ(c3.getX(), c1.getX() + c2.getX());
+}
+
+// -
+TEST_F(CoordinatesTest, SubtractOperatorWorks) {
+  Coordinates c1 = getRandomCoordinates();
+  Coordinates c2 = getRandomCoordinates();
+
+  Coordinates c3 = c1 - c2;
+
+  EXPECT_EQ(c3.getX(), c1.getX() - c2.getX());
+  EXPECT_EQ(c3.getX(), c1.getX() - c2.getX());
+  EXPECT_EQ(c3.getX(), c1.getX() - c2.getX());
 }
 
 TEST_F(CoordinateMapTest, TestDefaultInit) {

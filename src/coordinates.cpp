@@ -4,6 +4,10 @@
 #include <stdexcept>
 #include <vector>
 
+/// Constructor that initialises the coordinates by using x, y, and z parameters
+/// @param x_ X value of the coordinate
+/// @param y_ Y value of the coordinate
+/// @param z_ Z value of the coordinate
 Coordinates::Coordinates(int x_, int y_, int z_) : x(x_), y(y_), z(z_) {}
 Coordinates::Coordinates(const Coordinates &other) {
   x = other.getX();

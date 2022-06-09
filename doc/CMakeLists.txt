@@ -1,7 +1,7 @@
 find_package( Doxygen )
 
 if(DOXYGEN_FOUND)
-    message(STATUS "Doxygen found: ${DOXYGEN_EXECUTABLE} -- ${DOXYGEN_VERSION}")
+    message(STATUS "Doxygen found: ${DOXYGEN_EXECUTABLE} v${DOXYGEN_VERSION}")
 
     # Set Doxygen input and output files.
     set(DOXYGEN_INPUT_DIR ${PROJECT_SOURCE_DIR}/src)
@@ -24,14 +24,6 @@ if(DOXYGEN_FOUND)
       MAIN_DEPENDENCY ${DOXYFILE_OUT} ${DOXYFILE_IN}
       COMMENT "Generating Doxygen documentation"
       VERBATIM)
-
-    # Command for generating doc from Doxygen config file.
-    #add_custom_command(OUTPUT ${DOXYGEN_INDEX_FILE}
-    #  COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYFILE_OUT}
-    #  MAIN_DEPENDENCY ${DOXYFILE_OUT} ${DOXYFILE_IN}
-    #  COMMENT "Generating Doxygen documentation"
-    #  VERBATIM)
-
 
     # Create CMake Target for generating doc.
     add_custom_target(doc ALL DEPENDS ${DOXYGEN_INDEX_FILE})

@@ -4,11 +4,17 @@
 #include <iostream>
 
 /// Default constructor
+/// @param id Sets the id of the Shape, to be able to easily identify a shape,
+/// for example a Circle would get id="circle"
 Shape::Shape(const std::string id) : id_(id), coordsUpToDate(false) {
   coordinates = new std::vector<Coordinates>;
   coordmap_ = new CoordinateMap;
 }
 
+/// Default constructor
+/// @param cm Pointer to coordinatemap to create a custom shape
+/// @param id Sets the id of the Shape, to be able to easily identify a shape,
+/// for example a Circle would get id="circle"
 Shape::Shape(CoordinateMap *cm, const std::string id)
     : id_(id), coordsUpToDate(false) {
   coordinates = new std::vector<Coordinates>;
@@ -18,7 +24,7 @@ Shape::Shape(CoordinateMap *cm, const std::string id)
   coordsUpToDate = true;
 }
 
-/// Default desctructor
+/// Default destructor
 Shape::~Shape() {
   delete coordinates;
   delete coordmap_;
@@ -34,8 +40,10 @@ void Shape::move(int x_, int y_) {
   coordsUpToDate = true;
 }
 
-/// Check if two shapes overlap with each other.
-/// @param other Pointer to another
+/// Check if two shapes overlap with each other. Virtual member function, to
+/// allow better checking for shapes such as circles, which can be calculated
+/// quickly.
+/// @param other Pointer to another shape
 bool Shape::overlaps(Shape &other) {
   if ((this->size() == 0) || (other.size() == 0))
     return false;
