@@ -23,7 +23,9 @@ cmake ..
 make
 ```
 
-This should result in the executable being created in ```<repo>/bin/```, called *sneakyengine*
+If you right away want to generate documentation, run ```make all``` instead of ```make```.
+
+This should result in a executable, a test executable and a library being created in _\<repo\>/bin/_. If documentation was generated, it will be placed in _\<repo\>/build/doxygen/_
 
 # Goal of the project
 The goal of this project is to make something fun and learn stuff while doing it. The intend is to eventually make a library out of it to be used for other projects (possibly even with Python3 bindings, who knows). It is also used to learn more about things like GoogleTest, Valgrind, SDL2 and mroe. Creating a amateur gaming engine is simply a good way to learn a bit of everything.
@@ -56,7 +58,16 @@ valgrind --tool=memcheck --leak-check=yes bin/sneakyengine_tst
 ```
 # Documentation
 
-[Doxygen](https://www.doxygen.nl/index.html)(1.9.1) is used to generate the documentation. To generate the documentation, install doxygen and run the following command:
+[Doxygen](https://www.doxygen.nl/index.html)(1.9.1) is used to generate the documentation. To generate the documentation you can either run the doxygen command manually or generate it with _make_. To generate the docs with _make_, use the following command (assuming you already ran _cmake_):
+
+```
+cd build
+make doc
+```
+
+Which will place the generated file in _build/doc/doxygen/html/_ and _build/doc/doxygen/latex/_
+
+If you want to run doxygen manually, run the following command:
 
 ```
 cd doc && doxygen DoxyFile

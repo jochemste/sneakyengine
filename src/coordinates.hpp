@@ -8,6 +8,8 @@
 #include <iostream>
 #include <sstream>
 
+/// A class to handle coordinates. Allows a number of arithmetic operations for
+/// easily handling and processing coordinates
 class Coordinates {
 public:
   Coordinates(int x_ = 0, int y_ = 0, int z_ = 0);
