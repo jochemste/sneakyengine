@@ -61,10 +61,12 @@ Coordinates &Coordinates::operator+=(const int n) {
   return *this;
 }
 
-Coordinates &Coordinates::operator++(const int n) {
-  x++;
-  y++;
-  z++;
+Coordinates &Coordinates::operator++(int) { return ++(*this); }
+
+Coordinates &Coordinates::operator++() {
+  ++x;
+  ++y;
+  ++z;
   return *this;
 }
 
@@ -82,10 +84,12 @@ Coordinates &Coordinates::operator-=(const int n) {
   return *this;
 }
 
-Coordinates &Coordinates::operator--(const int n) {
-  x--;
-  y--;
-  z--;
+Coordinates Coordinates::operator--(const int n) { return --(*this); }
+
+Coordinates &Coordinates::operator--() {
+  --x;
+  --y;
+  --z;
   return *this;
 }
 

@@ -10,7 +10,7 @@
 
 class Coordinates {
 public:
-  Coordinates(int, int, int);
+  Coordinates(int x_ = 0, int y_ = 0, int z_ = 0);
   Coordinates(const Coordinates &other);
   ~Coordinates();
 
@@ -27,10 +27,12 @@ public:
   bool operator==(const Coordinates &other);
   Coordinates &operator+=(const Coordinates &other);
   Coordinates &operator+=(const int n);
-  Coordinates &operator++(const int n);
+  Coordinates &operator++(int); // Postfix
+  Coordinates &operator++();    // Prefix
   Coordinates &operator-=(const Coordinates &other);
   Coordinates &operator-=(const int n);
-  Coordinates &operator--(const int n);
+  Coordinates operator--(const int n); // Postfix
+  Coordinates &operator--();           // Prefix
   Coordinates operator+(const Coordinates &rh);
   Coordinates operator-(const Coordinates &rh);
   operator std::string() const {

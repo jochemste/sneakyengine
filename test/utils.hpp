@@ -6,6 +6,7 @@
 #include <time.h>
 #include <vector>
 
+void seedRand();
 int getRandomInt();
 int getRandomPositiveInt();
 std::vector<Coordinates> *getRandomCoordVector();

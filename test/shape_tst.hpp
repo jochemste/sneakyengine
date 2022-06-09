@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 
 #include "../src/shape.hpp"
+#include "utils.hpp"
 
 #include <iostream>
 

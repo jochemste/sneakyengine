@@ -1,5 +1,7 @@
 #include "utils.hpp"
 
+void seedRand() { srand(time(NULL)); }
+
 int getRandomInt() { return rand() % 500; }
 int getRandomPositiveInt() { return ((rand() % 500) + 1) * 5; }
 

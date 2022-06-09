@@ -1,3 +1,7 @@
+# Doxygen generated files
+doc/html/
+doc/latex/
+
 # Cmake Build files
 build/
 

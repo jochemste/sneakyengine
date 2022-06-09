@@ -55,3 +55,4 @@ git submodule foreach git pull
 valgrind --tool=memcheck --leak-check=yes bin/sneakyengine_tst
 ```
 
+[Doxygen](https://www.doxygen.nl/index.html) is used to generate the documentation.

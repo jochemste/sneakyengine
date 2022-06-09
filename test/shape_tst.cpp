@@ -1,5 +1,4 @@
 #include "shape_tst.hpp"
-#include "utils.hpp"
 
 TEST_F(ShapeTest, TestEmptyInit) {
   Shape s;

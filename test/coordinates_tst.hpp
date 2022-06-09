@@ -10,10 +10,13 @@
 
 class CoordinatesTest : public ::testing::Test {
 protected:
+  void SetUp() override { seedRand(); };
 };
 
 class CoordinateMapTest : public ::testing::Test {
+
 protected:
+  void SetUp() override { seedRand(); };
 };
 
 std::vector<Coordinates> *getRandomCoordVector();

@@ -2,7 +2,7 @@
 #include "utils.hpp"
 #include <vector>
 
-TEST_F(CoordinatesTest, TestInit) {
+TEST_F(CoordinatesTest, InitWorks) {
   int one[3] = {1, 1, 1};
   int two[3] = {2, 3, 4};
   int three[3] = {-1000, 1023, -123};
@@ -44,7 +44,7 @@ TEST_F(CoordinatesTest, TestInit) {
   EXPECT_EQ(c1.getZ(), c4.getZ());
 }
 
-TEST_F(CoordinatesTest, TestSetX) {
+TEST_F(CoordinatesTest, SetXWorks) {
   int x = 21;
   Coordinates c(x, 2, 3);
 
@@ -54,7 +54,7 @@ TEST_F(CoordinatesTest, TestSetX) {
   EXPECT_EQ(x * 12, c.getX());
 }
 
-TEST_F(CoordinatesTest, TestSetY) {
+TEST_F(CoordinatesTest, SetYWorks) {
   int y = 21;
   Coordinates c(5, y, 3);
 
@@ -64,7 +64,7 @@ TEST_F(CoordinatesTest, TestSetY) {
   EXPECT_EQ(y * 12, c.getY());
 }
 
-TEST_F(CoordinatesTest, TestSetZ) {
+TEST_F(CoordinatesTest, SetZWorks) {
   int z = 21;
   Coordinates c(2, 3, z);
 
@@ -74,7 +74,43 @@ TEST_F(CoordinatesTest, TestSetZ) {
   EXPECT_EQ(z * 12, c.getZ());
 }
 
-TEST_F(CoordinatesTest, TestPLUSIS) {
+// []
+TEST_F(CoordinateMapTest, IndexOperatorWorks) {
+  auto *c1 = getRandomCoordVector();
+
+  CoordinateMap cm(*c1);
+
+  int y1 = cm.end();
+  int y2 = cm.atIndex(-1);
+  int y3 = cm[-1];
+
+  EXPECT_EQ(y1, y2);
+  EXPECT_EQ(y1, y3);
+  EXPECT_EQ(y2, y3);
+
+  for (int i = 0; i < cm.size(); i++) {
+    int n = rand() % cm.size();
+
+    y1 = cm.atIndex(n);
+    y2 = cm[n];
+    EXPECT_EQ(y1, y2);
+  }
+
+  delete c1;
+}
+
+// =
+TEST_F(CoordinatesTest, AssignOperatorWorks) {
+  Coordinates c1 = getRandomCoordinates();
+  Coordinates c2 = c1;
+
+  EXPECT_EQ(c1.getX(), c2.getX());
+  EXPECT_EQ(c1.getY(), c2.getY());
+  EXPECT_EQ(c1.getZ(), c2.getZ());
+}
+
+// +=
+TEST_F(CoordinatesTest, AddAssignOperatorWorks) {
   Coordinates c1 = getRandomCoordinates();
   Coordinates c2 = getRandomCoordinates();
 
@@ -103,7 +139,68 @@ TEST_F(CoordinatesTest, TestPLUSIS) {
   EXPECT_EQ(c2.getZ(), z2 + n);
 }
 
-TEST_F(CoordinatesTest, TestMINIS) {
+// Postfix ++
+TEST_F(CoordinatesTest, PostfixIncrementOperatorWorks) {
+  Coordinates c1 = getRandomCoordinates();
+  Coordinates c2 = getRandomCoordinates();
+
+  int x1, y1, z1;
+  x1 = c1.getX();
+  y1 = c1.getY();
+  z1 = c1.getZ();
+
+  int x2, y2, z2;
+  x2 = c2.getX();
+  y2 = c2.getY();
+  z2 = c2.getZ();
+
+  c1++;
+
+  EXPECT_EQ(c1.getX(), x1 + 1);
+  EXPECT_EQ(c1.getY(), y1 + 1);
+  EXPECT_EQ(c1.getZ(), z1 + 1);
+
+  int incr = getRandomInt();
+  for (int i = 0; i < incr; i++)
+    c2++;
+
+  EXPECT_EQ(c2.getX(), x2 + incr);
+  EXPECT_EQ(c2.getY(), y2 + incr);
+  EXPECT_EQ(c2.getZ(), z2 + incr);
+}
+
+// Prefix ++
+TEST_F(CoordinatesTest, PrefixIncrementOperatorWorks) {
+  Coordinates c1 = getRandomCoordinates();
+  Coordinates c2 = getRandomCoordinates();
+
+  int x1, y1, z1;
+  x1 = c1.getX();
+  y1 = c1.getY();
+  z1 = c1.getZ();
+
+  int x2, y2, z2;
+  x2 = c2.getX();
+  y2 = c2.getY();
+  z2 = c2.getZ();
+
+  ++c1;
+
+  EXPECT_EQ(c1.getX(), x1 + 1);
+  EXPECT_EQ(c1.getY(), y1 + 1);
+  EXPECT_EQ(c1.getZ(), z1 + 1);
+
+  int incr = getRandomInt();
+  for (int i = 0; i < incr; i++)
+    ++c2;
+
+  EXPECT_EQ(c2.getX(), x2 + incr);
+  EXPECT_EQ(c2.getY(), y2 + incr);
+  EXPECT_EQ(c2.getZ(), z2 + incr);
+}
+
+// -=
+TEST_F(CoordinatesTest, TestSubtractAssignOperator) {
   Coordinates c1 = getRandomCoordinates();
   Coordinates c2 = getRandomCoordinates();
 
@@ -132,7 +229,8 @@ TEST_F(CoordinatesTest, TestMINIS) {
   EXPECT_EQ(c2.getZ(), z2 - n);
 }
 
-TEST_F(CoordinatesTest, TestPLUS) {
+// +
+TEST_F(CoordinatesTest, TestAddOperator) {
   Coordinates c1 = getRandomCoordinates();
   Coordinates c2 = getRandomCoordinates();
 
@@ -143,7 +241,8 @@ TEST_F(CoordinatesTest, TestPLUS) {
   EXPECT_EQ(c3.getX(), c1.getX() + c2.getX());
 }
 
-TEST_F(CoordinatesTest, TestMIN) {
+// -
+TEST_F(CoordinatesTest, TestSubtractOperator) {
   Coordinates c1 = getRandomCoordinates();
   Coordinates c2 = getRandomCoordinates();
 
@@ -152,35 +251,6 @@ TEST_F(CoordinatesTest, TestMIN) {
   EXPECT_EQ(c3.getX(), c1.getX() - c2.getX());
   EXPECT_EQ(c3.getX(), c1.getX() - c2.getX());
   EXPECT_EQ(c3.getX(), c1.getX() - c2.getX());
-}
-
-TEST_F(CoordinatesTest, TestINCR) {
-  Coordinates c1 = getRandomCoordinates();
-  Coordinates c2 = getRandomCoordinates();
-
-  int x1, y1, z1;
-  x1 = c1.getX();
-  y1 = c1.getY();
-  z1 = c1.getZ();
-
-  int x2, y2, z2;
-  x2 = c2.getX();
-  y2 = c2.getY();
-  z2 = c2.getZ();
-
-  c1++;
-
-  EXPECT_EQ(c1.getX(), x1 + 1);
-  EXPECT_EQ(c1.getY(), y1 + 1);
-  EXPECT_EQ(c1.getZ(), z1 + 1);
-
-  int incr = getRandomInt();
-  for (int i = 0; i < incr; i++)
-    c2++;
-
-  EXPECT_EQ(c2.getX(), x2 + incr);
-  EXPECT_EQ(c2.getY(), y2 + incr);
-  EXPECT_EQ(c2.getZ(), z2 + incr);
 }
 
 TEST_F(CoordinatesTest, TestDECR) {
@@ -355,30 +425,6 @@ TEST_F(CoordinateMapTest, TestAdditionOperator) {
 
   delete c1;
   delete c2;
-}
-
-TEST_F(CoordinateMapTest, TestIndexOperator) {
-  auto *c1 = getRandomCoordVector();
-
-  CoordinateMap cm(*c1);
-
-  int y1 = cm.end();
-  int y2 = cm.atIndex(-1);
-  int y3 = cm[-1];
-
-  EXPECT_EQ(y1, y2);
-  EXPECT_EQ(y1, y3);
-  EXPECT_EQ(y2, y3);
-
-  for (int i = 0; i < cm.size(); i++) {
-    int n = rand() % cm.size();
-
-    y1 = cm.atIndex(n);
-    y2 = cm[n];
-    EXPECT_EQ(y1, y2);
-  }
-
-  delete c1;
 }
 
 TEST_F(CoordinateMapTest, TestIsInMap) {
