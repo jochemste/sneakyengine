@@ -74,31 +74,6 @@ TEST_F(CoordinatesTest, SetZWorks) {
   EXPECT_EQ(z * 12, c.getZ());
 }
 
-// []
-TEST_F(CoordinateMapTest, IndexOperatorWorks) {
-  auto *c1 = getRandomCoordVector();
-
-  CoordinateMap cm(*c1);
-
-  int y1 = cm.end();
-  int y2 = cm.atIndex(-1);
-  int y3 = cm[-1];
-
-  EXPECT_EQ(y1, y2);
-  EXPECT_EQ(y1, y3);
-  EXPECT_EQ(y2, y3);
-
-  for (int i = 0; i < cm.size(); i++) {
-    int n = rand() % cm.size();
-
-    y1 = cm.atIndex(n);
-    y2 = cm[n];
-    EXPECT_EQ(y1, y2);
-  }
-
-  delete c1;
-}
-
 // =
 TEST_F(CoordinatesTest, AssignOperatorWorks) {
   Coordinates c1 = getRandomCoordinates();
@@ -485,7 +460,71 @@ TEST_F(CoordinateMapTest, MoveWorks) {
   delete c;
 }
 
-TEST_F(CoordinateMapTest, TestAdditionOperator) {
+TEST_F(CoordinateMapTest, AtIndexWorks) {
+  auto *c1 = getRandomCoordVectorSmall();
+  // std::vector<Coordinates> *c1 = new std::vector<Coordinates>;
+  Coordinates coord1(getRandomInt(), getRandomInt(), getRandomInt());
+  Coordinates coord2(getRandomInt(), getRandomInt(), getRandomInt());
+  Coordinates coord3(getRandomInt(), getRandomInt(), getRandomInt());
+  c1->push_back(coord1);
+  c1->push_back(coord1);
+  for (int i = 0; i < 5; i++)
+    c1->push_back(coord2);
+  c1->push_back(coord3);
+  std::vector<int> y_vals;
+
+  CoordinateMap cm(*c1);
+  cm.rmDuplicates();
+
+  // remove duplicates
+  std::vector<Coordinates> nCoords;
+  for (auto &el : *c1) {
+    bool exists = false;
+    for (auto &nel : nCoords) {
+      if (el.getX() == nel.getX() && el.getY() == nel.getY()) {
+        exists = true;
+      }
+    }
+    if (!exists) {
+      nCoords.push_back(el);
+    }
+  }
+
+  for (auto &el : nCoords) {
+    y_vals.push_back(el.getY());
+  }
+  sort(y_vals.begin(), y_vals.end());
+
+  EXPECT_EQ(cm.size(), nCoords.size());
+
+  for (int i = 0; i < cm.size(); i++) {
+  }
+
+  int ctr = 0;
+  for (auto &el : y_vals) {
+    EXPECT_EQ(cm.atIndex(ctr++), el);
+  }
+
+  delete c1;
+}
+
+TEST_F(CoordinateMapTest, EndWorks) {
+  auto *c1 = getRandomCoordVector();
+  std::vector<int> y_vals;
+
+  CoordinateMap cm(*c1);
+
+  for (auto &el : *c1) {
+    y_vals.push_back(el.getY());
+  }
+  sort(y_vals.begin(), y_vals.end());
+
+  EXPECT_EQ(y_vals.at(y_vals.size() - 1), cm.end());
+
+  delete c1;
+}
+
+TEST_F(CoordinateMapTest, AdditionOperatorWorks) {
   auto *c1 = getRandomCoordVector();
   auto *c2 = getRandomCoordVector();
 
@@ -782,4 +821,29 @@ TEST_F(CoordinateMapTest, TestOperatorMINCoordinates) {
   delete c1;
   delete c2;
   delete c3;
+}
+
+// []
+TEST_F(CoordinateMapTest, IndexOperatorWorks) {
+  auto *c1 = getRandomCoordVector();
+
+  CoordinateMap cm(*c1);
+
+  int y1 = cm.end();
+  int y2 = cm.atIndex(-1);
+  int y3 = cm[-1];
+
+  EXPECT_EQ(y1, y2);
+  EXPECT_EQ(y1, y3);
+  EXPECT_EQ(y2, y3);
+
+  for (int i = 0; i < cm.size(); i++) {
+    int n = rand() % cm.size();
+
+    y1 = cm.atIndex(n);
+    y2 = cm[n];
+    EXPECT_EQ(y1, y2);
+  }
+
+  delete c1;
 }

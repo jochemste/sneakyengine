@@ -434,11 +434,11 @@ void CoordinateMap::rmDuplicates() {
 
   // Loop through map
   for (auto it = coordmap_->begin(); it != coordmap_->end(); it++) {
-    int s = it->second.size();
     std::vector<int> newRow;
-    for (auto i = 0; i < it->second.size(); ++i) {
-      if (((i + 1) == it->second.size()) ||
-          (it->second.at(i) != it->second.at(i + 1))) {
+    // Loop through row
+    for (int i = 0; i < it->second.size(); ++i) {
+      std::cout << i << std::endl;
+      if ((i == 0) || (it->second.at(i) != it->second.at(i - 1))) {
         newRow.push_back(it->second.at(i));
       }
     }
