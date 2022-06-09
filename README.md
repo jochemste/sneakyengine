@@ -56,4 +56,10 @@ valgrind --tool=memcheck --leak-check=yes bin/sneakyengine_tst
 ```
 # Documentation
 
-[Doxygen](https://www.doxygen.nl/index.html) is used to generate the documentation.
+[Doxygen](https://www.doxygen.nl/index.html)(1.9.1) is used to generate the documentation. To generate the documentation, install doxygen and run the following command:
+
+```
+cd doc && doxygen DoxyFile
+```
+
+After this, the generated files can be found in _doc/html/_ and _doc/latex_.
