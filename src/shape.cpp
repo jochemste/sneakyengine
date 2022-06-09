@@ -6,19 +6,21 @@
 /// Default constructor
 /// @param id Sets the id of the Shape, to be able to easily identify a shape,
 /// for example a Circle would get id="circle"
-Shape::Shape(const std::string id) : id_(id), coordsUpToDate(false) {
-  coordinates = new std::vector<Coordinates>;
-  coordmap_ = new CoordinateMap;
+Shape::Shape(const std::string id)
+    : id_(id), coordsUpToDate(false), coordinates(new std::vector<Coordinates>),
+      coordmap_(new CoordinateMap) {
+  // coordinates = new std::vector<Coordinates>;
+  // coordmap_ = new CoordinateMap;
 }
 
-/// Default constructor
+/// Constructor
 /// @param cm Pointer to coordinatemap to create a custom shape
 /// @param id Sets the id of the Shape, to be able to easily identify a shape,
 /// for example a Circle would get id="circle"
 Shape::Shape(CoordinateMap *cm, const std::string id)
-    : id_(id), coordsUpToDate(false) {
-  coordinates = new std::vector<Coordinates>;
-  coordmap_ = cm;
+    : id_(id), coordsUpToDate(false), coordinates(new std::vector<Coordinates>),
+      coordmap_(cm) {
+  // coordmap_ = cm;
   coordmap_->rmDuplicates();
   *coordinates = coordmap_->getCoordinates();
   coordsUpToDate = true;

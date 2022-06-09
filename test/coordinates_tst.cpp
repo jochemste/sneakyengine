@@ -326,7 +326,7 @@ TEST_F(CoordinatesTest, SubtractOperatorWorks) {
   EXPECT_EQ(c3.getX(), c1.getX() - c2.getX());
 }
 
-TEST_F(CoordinateMapTest, TestDefaultInit) {
+TEST_F(CoordinateMapTest, DefaultInitWorks) {
   CoordinateMap c;
   EXPECT_EQ(-1, c.getMinX());
   EXPECT_EQ(-1, c.getMinY());
@@ -334,7 +334,7 @@ TEST_F(CoordinateMapTest, TestDefaultInit) {
   EXPECT_EQ(-1, c.getMaxY());
 }
 
-TEST_F(CoordinateMapTest, TestCoordInit) {
+TEST_F(CoordinateMapTest, CoordInitWorks) {
   int loop = getRandomPositiveInt();
   std::vector<Coordinates> *coordinates = new std::vector<Coordinates>;
   std::vector<int> x, y, z;
@@ -383,7 +383,7 @@ TEST_F(CoordinateMapTest, CoordVectorsAreCopiedProperly) {
   delete coordinates;
 }
 
-TEST_F(CoordinateMapTest, TestCopyConstructor) {
+TEST_F(CoordinateMapTest, CopyConstructorWorks) {
   auto *c1 = getRandomCoordVector();
   auto *c2 = getRandomCoordVector();
 
@@ -398,7 +398,7 @@ TEST_F(CoordinateMapTest, TestCopyConstructor) {
   delete c2;
 }
 
-TEST_F(CoordinateMapTest, TestAddCoordinates) {
+TEST_F(CoordinateMapTest, AddCoordinatesWorks) {
   auto *c1 = getRandomCoordVector();
 
   CoordinateMap cm;
@@ -406,16 +406,54 @@ TEST_F(CoordinateMapTest, TestAddCoordinates) {
 
   EXPECT_EQ(c1->size(), cm.size());
 
+  for (auto &el : *c1)
+    EXPECT_TRUE(cm.isInMap(el));
+
   delete c1;
 }
 
-TEST_F(CoordinateMapTest, TestMove) {
+TEST_F(CoordinateMapTest, SetCoordinatesWorks) {
+  auto *c1 = getRandomCoordVector();
+  auto *c2 = getRandomCoordVector();
+
+  if (c2->size() == c1->size())
+    for (int i = 0; i < getRandomPositiveInt(); i++)
+      c2->push_back(getRandomCoordinates());
+
+  // initialise with larger coord vector
+  CoordinateMap cm(*c2);
+
+  // When setting coords, the map should be cleared, so the size should have
+  // changed as well
+  cm.setCoordinates(*c1);
+
+  EXPECT_EQ(c1->size(), cm.size());
+
+  delete c1;
+  delete c2;
+}
+
+TEST_F(CoordinateMapTest, GetCoordinatesWorks) {
+  auto *c1 = getRandomCoordVector();
+
+  CoordinateMap cm(*c1);
+
+  auto c2 = cm.getCoordinates();
+
+  for (auto &el : c2)
+    EXPECT_TRUE(cm.isInMap(el));
+
+  delete c1;
+}
+
+TEST_F(CoordinateMapTest, MoveWorks) {
   auto *c = getRandomCoordVector();
 
   CoordinateMap cm(*c);
+  Coordinates coord;
 
   int minX, minY, maxX, maxY, x_add, y_add;
-  for (int i = 0; i < 1000; i++) {
+  for (int i = 0; i < getRandomPositiveInt(); i++) {
     x_add = getRandomInt();
     y_add = getRandomInt();
     minX = cm.getMinX();
@@ -429,6 +467,19 @@ TEST_F(CoordinateMapTest, TestMove) {
     EXPECT_EQ(cm.getMinY(), minY + y_add);
     EXPECT_EQ(cm.getMaxX(), maxX + x_add);
     EXPECT_EQ(cm.getMaxY(), maxY + y_add);
+
+    coord = getRandomCoordinates();
+    minX = cm.getMinX();
+    minY = cm.getMinY();
+    maxX = cm.getMaxX();
+    maxY = cm.getMaxY();
+
+    cm.move(coord);
+
+    EXPECT_EQ(cm.getMinX(), minX + coord.getX());
+    EXPECT_EQ(cm.getMinY(), minY + coord.getY());
+    EXPECT_EQ(cm.getMaxX(), maxX + coord.getX());
+    EXPECT_EQ(cm.getMaxY(), maxY + coord.getY());
   }
 
   delete c;
