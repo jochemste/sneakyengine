@@ -58,7 +58,13 @@ valgrind --tool=memcheck --leak-check=yes bin/sneakyengine_tst
 ```
 # Documentation
 
-[Doxygen](https://www.doxygen.nl/index.html)(1.9.1) is used to generate the documentation. To generate the documentation you can either run the doxygen command manually or generate it with _make_. To generate the docs with _make_, use the following command (assuming you already ran _cmake_):
+[Doxygen](https://www.doxygen.nl/index.html)(1.9.1) is used to generate the documentation, so make sure to install it. Graphviz is also used to generate graphs, although not required (you just will not get any graphs). Installing Graphviz is done using the following command (as root or sudo):
+
+```
+apt install graphviz
+```
+
+To generate the documentation you can either run the doxygen command manually or generate it with _make_. To generate the docs with _make_, use the following command (assuming you already ran _cmake_):
 
 ```
 cd build
