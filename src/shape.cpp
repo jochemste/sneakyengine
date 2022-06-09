@@ -9,7 +9,9 @@ Shape::Shape(const std::string id) : id_(id), coordsUpToDate(false) {
   coordmap_ = new CoordinateMap;
 }
 
-Shape::Shape(CoordinateMap *cm, const std::string id) : Shape(id) {
+Shape::Shape(CoordinateMap *cm, const std::string id)
+    : id_(id), coordsUpToDate(false) {
+  coordinates = new std::vector<Coordinates>;
   coordmap_ = cm;
   coordmap_->rmDuplicates();
   *coordinates = coordmap_->getCoordinates();
@@ -197,3 +199,5 @@ const int Shape::getMaxY() const {
 
 /// Return the size of the coordinates
 const int Shape::size() const { return coordinates->size(); }
+
+bool Circle::overlaps(Shape &other) { return false; }

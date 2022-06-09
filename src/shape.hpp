@@ -15,7 +15,7 @@ public:
   ~Shape();
 
   void move(int x_, int y_);
-  bool overlaps(Shape &other);
+  virtual bool overlaps(Shape &other);
 
   std::vector<Coordinates> *getShape();
   void getShape(std::vector<Coordinates> &coords);
@@ -62,6 +62,8 @@ public:
     }
     coordmap_->setCoordinates(*coordinates);
   }
+
+  bool overlaps(Shape &other) override;
 
 private:
 };

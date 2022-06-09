@@ -635,20 +635,22 @@ TEST_F(CoordinateMapTest, TestOperatorMINCoordinates) {
   auto *c2 = getRandomCoordVector();
 
   CoordinateMap cm1(*c1);
-  std::cout << cm1.size() << std::endl;
   cm1 += *c2;
-  std::cout << cm1.size() << std::endl;
-  // cm1 -= *c2;
-  std::cout << cm1.size() << std::endl;
 
-  CoordinateMap cm3 = cm1 - *c1;
-  std::cout << cm3.size() << " " << cm1.size() << " " << c1->size() << " "
-            << c2->size() << std::endl;
-  // std::cout << (cm1 - *c1).size() << std::endl;
+  CoordinateMap cm2 = cm1 - *c1;
 
-  EXPECT_EQ(cm3.size(), cm1.size() - c2->size());
-  ASSERT_NE(cm3.size(), 0);
+  EXPECT_EQ(cm2.size(), cm1.size() - c1->size());
+  ASSERT_NE(cm2.size(), 0);
+
+  auto *c3 = getRandomCoordVector();
+
+  CoordinateMap cm3 = (cm1 + cm2) - *c3;
+
+  for (const auto &coord : *c3) {
+    EXPECT_FALSE(cm3.isInMap(coord));
+  }
 
   delete c1;
   delete c2;
+  delete c3;
 }
