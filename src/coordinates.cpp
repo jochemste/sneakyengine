@@ -1,5 +1,7 @@
 #include "coordinates.hpp"
+#include <cmath>
 #include <exception>
+#include <math.h>
 #include <sstream>
 #include <stdexcept>
 #include <vector>
@@ -19,6 +21,14 @@ Coordinates::~Coordinates() {}
 const int Coordinates::getX() const { return x; }
 const int Coordinates::getY() const { return y; }
 const int Coordinates::getZ() const { return z; }
+
+const int Coordinates::getDistance(Coordinates &other) const {
+  double distance = sqrt(pow(other.getX() - x, 2) + pow(other.getY() - y, 2) +
+                         pow(other.getZ() - z, 2));
+  std::cout << "d: " << distance << " " << (int)std::round(distance)
+            << std::endl;
+  return (int)std::round(distance);
+}
 
 void Coordinates::setX(int x_) { x = x_; }
 void Coordinates::setY(int y_) { y = y_; }
@@ -304,6 +314,14 @@ const bool CoordinateMap::isInMap(const Coordinates &coord) const {
   return false;
 }
 
+Coordinates CoordinateMap::getMiddle() const {
+  int midY = maxY_ - ((maxY_ - minY_) / 2);
+  int midX = maxX_ - ((maxX_ - minX_) / 2);
+  int midZ = maxZ_ - ((maxZ_ - minZ_) / 2);
+
+  return Coordinates(midX, midY, midZ);
+}
+
 CoordinateMap &CoordinateMap::operator+=(const CoordinateMap &other) {
   this->addCoordinates(other.getCoordinates());
   return *this;
@@ -437,7 +455,6 @@ void CoordinateMap::rmDuplicates() {
     std::vector<int> newRow;
     // Loop through row
     for (int i = 0; i < it->second.size(); ++i) {
-      std::cout << i << std::endl;
       if ((i == 0) || (it->second.at(i) != it->second.at(i - 1))) {
         newRow.push_back(it->second.at(i));
       }
@@ -445,16 +462,6 @@ void CoordinateMap::rmDuplicates() {
     it->second = newRow;
   }
 
-  this->updateSize();
-}
-
-void CoordinateMap::clean() {
-  CoordinateMap cm_temp = *this;
-  this->clear();
-  *this = cm_temp;
-
-  this->rmDuplicates();
-  this->sortMap();
   this->updateSize();
 }
 

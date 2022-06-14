@@ -2,6 +2,7 @@
 #define COORDINATES_HPP
 
 #include <bits/stdc++.h>
+#include <cmath>
 #include <map>
 #include <vector>
 
@@ -23,6 +24,8 @@ public:
   void setX(int x_);
   void setY(int y_);
   void setZ(int z_);
+
+  const int getDistance(Coordinates &other) const;
 
   int &operator[](const int &index);
   Coordinates &operator=(const Coordinates &other);
@@ -72,6 +75,8 @@ public:
   void erase(const Coordinates &coord, const bool updateSize = true);
   void erase(const std::vector<Coordinates> &coords);
 
+  void rmDuplicates();
+
   const bool isInMapY(const int y) const;
   const bool isInMap(const int x, const int y, const int z = -1) const;
   const bool isInMap(const Coordinates &coord) const;
@@ -83,8 +88,7 @@ public:
   const int getMaxY() const { return maxY_; }
   const int getMaxZ() const { return maxZ_; }
 
-  void rmDuplicates();
-  void clean();
+  Coordinates getMiddle() const;
 
   CoordinateMap &operator+=(const CoordinateMap &other);
   CoordinateMap &operator+=(const Coordinates &coord);

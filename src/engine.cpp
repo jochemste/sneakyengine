@@ -33,6 +33,7 @@ const int Engine::run(const int framerate) {
   int r = 50;
 
   Circle circle(x, y, r);
+  Circle circle2(x, y, r);
   Rectangle rect(x + r, y, 20, 30);
 
   while (!(event->type == SDL_QUIT)) {
@@ -40,8 +41,10 @@ const int Engine::run(const int framerate) {
     SDL_RenderClear(renderer);
     SDL_PollEvent(event);
     drawShape(circle);
+    drawShape(circle2);
     drawShape(rect);
     circle.move(1, 1);
+    SDL_Log("Overlaps: %d", circle.overlaps(circle2));
 
     SDL_RenderPresent(renderer);
     int(time_left) = frametime - (SDL_GetTicks() - starttime);

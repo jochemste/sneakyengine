@@ -210,4 +210,15 @@ const int Shape::getMaxY() const {
 /// Return the size of the coordinates
 const int Shape::size() const { return coordinates->size(); }
 
-bool Circle::overlaps(Shape &other) { return false; }
+bool Circle::overlaps(Shape &other) {
+  auto middle = coordmap_->getMiddle();
+  auto d = 0;
+  for (auto &el : *other.getShape()) {
+    d = middle.getDistance(el);
+    std::cout << "distance: " << d << " r: " << radius_ << std::endl;
+    if (d <= radius_) {
+      return true;
+    }
+  }
+  return false;
+}

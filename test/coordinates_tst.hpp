@@ -4,6 +4,7 @@
 #include "utils.hpp"
 
 #include <bits/stdc++.h>
+#include <cmath>
 #include <iostream>
 #include <stdlib.h>
 #include <vector>

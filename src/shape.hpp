@@ -14,6 +14,7 @@ public:
   explicit Shape(CoordinateMap *cm, const std::string id = "none");
   ~Shape();
 
+  const std::string getId() { return id_; };
   void move(int x_, int y_);
   virtual bool overlaps(Shape &other);
 
@@ -42,8 +43,9 @@ private:
 
 class Circle : public Shape {
 public:
+  Circle() = delete;
   Circle(int center_x, int center_y, int radius, bool solid = false)
-      : Shape("circle") {
+      : Shape("circle"), radius_(radius) {
     if (solid == true) {
       for (int x = center_x - radius; x <= center_x + radius; x++) {
         for (int y = center_y - radius; y <= center_y + radius; y++) {
@@ -66,10 +68,12 @@ public:
   bool overlaps(Shape &other) override;
 
 private:
+  const int radius_ = 0;
 };
 
 class Rectangle : public Shape {
 public:
+  Rectangle() = delete;
   Rectangle(int left_x, int top_y, int width, int height, bool solid = false)
       : Shape("rect") {
     // Define other extremes

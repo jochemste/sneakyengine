@@ -8,7 +8,7 @@ int main(int argc, char **argv) {
 
   Engine engine;
   engine.openWindow(200, 400);
-  int res = engine.run(10);
+  int res = engine.run(5);
 
   if (res) {
     std::cout << "An error occurred. Error code: " << res << std::endl;
