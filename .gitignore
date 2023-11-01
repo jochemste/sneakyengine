@@ -41,3 +41,8 @@ build/
 *.out
 *.app
 bin/sneakyengine
+
+# GTAGS
+**GTAGS**
+**GRTAGS**
+**GPATH**

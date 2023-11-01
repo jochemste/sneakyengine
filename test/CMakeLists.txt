@@ -1,10 +1,16 @@
-set(EXEC_TST ${PROJECTNAME}_tst)
-set(TST_SRCS main.cpp coordinates_tst.cpp shape_tst.cpp utils.cpp)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${${PROJECTNAME}_SOURCE_DIR}/bin)
+include(TestFunctions)
 
-project(${EXEC_TST})
+enable_testing()
 
-add_executable(${EXEC_TST} ${TST_SRCS})
-add_test(NAME ${EXEC_TST} COMMAND ${EXEC_TST})
+add_executable(
+  test_engine
+  test_engine.cpp
+  )
 
-target_link_libraries(${EXEC_TST} PUBLIC ${PROJECTNAME}_lib gtest ${SDL2_LIBRARIES})
+target_link_libraries(
+  test_engine
+  GTest::gtest_main
+  )
+
+include(GoogleTest)
+gtest_discover_tests(test_engine)

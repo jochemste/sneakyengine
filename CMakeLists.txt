@@ -1,31 +1,32 @@
-cmake_minimum_required (VERSION 3.23)
+cmake_minimum_required (VERSION 3.25)
+
 set(CMAKE_BUILD_TYPE Debug)
 
 set(PROJECTNAME "sneakyengine")
+project (${PROJECTNAME} VERSION "0.0.1" LANGUAGES C CXX)
 
-set(CMAKE_CXX_STANDARD 20)
-
-# Below line is for using C++20 standard
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
-
-project (${PROJECTNAME})
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/")
 
 message("Configuring build files for ${PROJECTNAME}")
 
-find_package(SDL2 REQUIRED)
-if (NOT SDL2_FOUND)
-  message(FATAL_ERROR "SDL2 required but not found")
-endif()
+# Include cmake scripts
+include(CheckDependencies)
+include(BuildRules)
+include(Options)
+include(GetSDL)
+include(GetGTest)
 
 # Source code
 add_subdirectory(src)
+
 # Testing directories
 add_subdirectory(test)
-add_subdirectory(lib/googletest)
+
 # Doxygen docs
-option(BUILD_WITH_DOCS "Generate Docs" ON)
-#if(TASKSCH_BUILD_WITH_DOCS)
+if(BUILD_WITH_DOCS)
   add_subdirectory(doc)
-#endif()
+endif()
+
+target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3)
 
 install(TARGETS ${PROJECTNAME} DESTINATION ${${PROJECTNAME}_SOURCE_DIR}/bin)
