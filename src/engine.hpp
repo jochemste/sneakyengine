@@ -9,7 +9,7 @@ public:
   Engine();
   ~Engine();
 
-  const int run();
+  int run();
   int stop();
 
 private:
