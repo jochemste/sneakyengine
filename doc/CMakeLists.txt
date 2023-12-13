@@ -26,7 +26,9 @@ if(DOXYGEN_FOUND)
     VERBATIM)
 
   # Create CMake Target for generating doc.
-  add_custom_target(doc ALL DEPENDS ${DOXYGEN_INDEX_FILE})
+  add_custom_target(doc
+    DEPENDS ${DOXYGEN_INDEX_FILE}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/doc)
 else()
   message("Doxygen was not found")
 endif()
