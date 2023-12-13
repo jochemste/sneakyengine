@@ -3,10 +3,10 @@
 
 #include <iostream>
 
-Engine::Engine() : m_engineState(EngineState::NOT_RUNNING) {}
+Engine::Engine() : m_engine_state(EngineState::NOT_RUNNING) {}
 
 Engine::~Engine() {
-  if (this->m_engineState == EngineState::RUNNING) {
+  if (this->m_engine_state == EngineState::RUNNING) {
     stop();
   }
 }
@@ -17,7 +17,7 @@ int Engine::run() {
 }
 
 int Engine::stop() {
-  this->m_engineState = EngineState::STOPPED;
+  this->m_engine_state = EngineState::STOPPED;
   Log(LogLevel::info) << LOG_HEADER << "Engine stopped";
   return 0;
 }

@@ -13,7 +13,7 @@ public:
   int stop();
 
 private:
-  EngineState m_engineState = EngineState::NOT_RUNNING;
+  EngineState m_engine_state = EngineState::NOT_RUNNING;
 };
 
 #endif
