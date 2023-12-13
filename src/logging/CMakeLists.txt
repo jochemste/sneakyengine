@@ -1,5 +1,7 @@
 set(LIBNAME logger)
 
+set(LOGGING_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR} CACHE INTERNAL "")
+
 set(SRCS
   logging.cpp
   )

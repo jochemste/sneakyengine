@@ -1,7 +1,6 @@
 #include "engine.hpp"
+#include "display.hpp"
 #include "logging.hpp"
-
-#include <iostream>
 
 Engine::Engine() : m_engine_state(EngineState::NOT_RUNNING) {}
 
@@ -13,6 +12,8 @@ Engine::~Engine() {
 
 int Engine::run() {
   Log(LogLevel::info) << LOG_HEADER << "Engine is running";
+  std::unique_ptr<IDisplay> display = DIS_get_display_instance();
+  display->start();
   return 0;
 }
 
