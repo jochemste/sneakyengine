@@ -41,6 +41,7 @@ build/
 *.out
 *.app
 bin/sneakyengine
+bin/test_engine
 
 # GTAGS
 **GTAGS**
