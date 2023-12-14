@@ -1,8 +1,6 @@
 #include "engine.hpp"
 
-#include <logging.hpp>
-
-#include <iostream>
+#include "logging.hpp"
 
 int main(int /*argc*/, char ** /*argv*/) {
   Log().set_loglevel(LogLevel::debug);
@@ -12,7 +10,8 @@ int main(int /*argc*/, char ** /*argv*/) {
   Engine engine;
   int res = engine.run();
   if (res) {
-    std::cout << "An error occurred. Error code: " << res << std::endl;
+    Log(LogLevel::critical)
+        << LOG_HEADER << "An error occurred. Error code: " << res;
   }
   engine.stop();
 }
