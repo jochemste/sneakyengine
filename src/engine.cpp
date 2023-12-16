@@ -21,6 +21,12 @@ int Engine::run() {
   Log(LogLevel::info) << LOG_HEADER << "Engine is running";
   m_display = DIS_get_display_instance();
   m_display->start();
+
+  int test_loops = 60;
+  for (int i = 0; i < test_loops; i++) {
+    m_display->refresh();
+  }
+
   return 0;
 }
 
