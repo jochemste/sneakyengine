@@ -37,8 +37,14 @@ protected:
 private:
   /// Logging level to use for the logger implementation
   static LogLevel m_loglevel_app;
+
+  /// Logging level of the current buffer
   LogLevel m_loglevel_buffer;
+
+  /// The buffer to log
   std::ostringstream m_buffer;
+
+  /// The implemented instance of the logger
   std::unique_ptr<ILogInstance> m_logger;
 };
 

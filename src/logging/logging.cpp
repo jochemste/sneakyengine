@@ -6,9 +6,7 @@ LogLevel Log::m_loglevel_app = LogLevel::error;
 Log::Log(LogLevel log_level) : Log(std::make_unique<LogSDLImpl>(), log_level) {}
 
 Log::Log(std::unique_ptr<ILogInstance> logger, LogLevel log_level)
-    : m_loglevel_buffer(log_level), m_logger(std::move(logger)) {
-  // m_logger = std::move(logger);
-}
+    : m_loglevel_buffer(log_level), m_logger(std::move(logger)) {}
 
 Log::~Log() { flush(); }
 
