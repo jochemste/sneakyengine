@@ -2,8 +2,10 @@ set(SRCS main.cpp engine.cpp)
 
 # include modules
 add_subdirectory(logging)
+add_subdirectory(utils)
 add_subdirectory(display)
 add_subdirectory(process)
+
 
 add_executable(${PROJECTNAME} ${SRCS})
 
