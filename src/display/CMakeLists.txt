@@ -18,4 +18,5 @@ target_include_directories(
   ${LIBNAME}
   PRIVATE
   ${LOGGING_INCLUDE}
+  ${UTILS_INCLUDE}
   )
