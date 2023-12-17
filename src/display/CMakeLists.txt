@@ -13,10 +13,14 @@ add_library(
   ${SRCS}
   )
 
-target_link_libraries(${LIBNAME} PRIVATE SDL3::SDL3 ${LOGGING_LIB})
+target_link_libraries(${LIBNAME}
+  PRIVATE
+  SDL3::SDL3
+  ${LINK_FOR_ALL}
+  )
 target_include_directories(
   ${LIBNAME}
   PRIVATE
-  ${LOGGING_INCLUDE}
+  ${INCLUDE_FOR_ALL}
   ${UTILS_INCLUDE}
   )
