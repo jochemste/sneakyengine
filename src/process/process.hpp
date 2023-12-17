@@ -38,20 +38,8 @@ public:
   virtual ProcessState get_state() = 0;
 };
 
-/// Interface of Queue of processes
-class IProcessQueue {
-public:
-  /// Push a process to the back of the queue
-  virtual void push(IProcess &proc) = 0;
-
-  /// Pop the process at the front of the queue
-  virtual IProcess &pop() = 0;
-
-  /// Get the size of the queue
-  virtual unsigned int size() = 0;
-};
-
-/// Interface to managing class of processes
+/// @brief Interface to managing class of processes
+/// Functions as adapter to scheduler classes
 class IProcessManager {
 public:
 };
