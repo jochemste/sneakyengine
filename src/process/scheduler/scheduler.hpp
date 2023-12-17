@@ -1,23 +1,33 @@
 #ifndef SCHEDULER_HPP
 #define SCHEDULER_HPP
 
-/// Scheduler interface
+#include <memory>
+
+/// @brief Scheduler interface
 template <typename T> class IScheduler {
 public:
-  /// Get next scheduled process
+  /// @brief Get next scheduled process
+  /// @return The next scheduled process
   virtual T &get_next() = 0;
 
-  /// Add process to scheduler
-  virtual void schedule(T &process, int priority = 0) = 0;
+  /// @brief Add process to scheduler
+  /// @param[in] process The process to schedule
+  /// @return integer with unique process id
+  virtual int schedule(T &process, int priority = 0) = 0;
 
-  /// Get the number of running and waiting processes
+  /// @brief Get the number of running and waiting processes
   virtual unsigned int nr_processes() = 0;
 };
 
-/// Abstract factory class to generate schedulers
+/// @brief Abstract factory class to generate schedulers
 template <typename T> class ISchedulerFactory {
 public:
-  virtual IScheduler<T> &createQueueScheduler() = 0;
+  /// @brief Create a first in first out scheduler
+  virtual IScheduler<T> &createFIFOScheduler() = 0;
 };
+
+/// @brief Get the default scheduler factory implementation
+template <typename T>
+std::unique_ptr<ISchedulerFactory<T>> SCHED_get_scheduler_factory();
 
 #endif // SCHEDULER_HPP
