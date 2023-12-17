@@ -25,23 +25,49 @@ enum class ProcessState {
   failed,
 };
 
+/// @brief Ownership enum class of process
+enum class ProcessOwner {
+  /// Owned by process manager. Modifier functions are disabled for others
+  process_manager,
+
+  /// Owned by client application. Client is responsible for execution
+  client_application,
+
+  /// No owner is defined
+  none,
+};
+
 /// Interface to processes to be run. A variation of the command pattern
 class IProcess {
 public:
   /// Start the process
-  virtual void start(int id, const std::string &name) = 0;
+  virtual void execute(int id, const std::string &name) = 0;
 
   /// Stop the process
-  virtual void stop() = 0;
+  virtual void kill() = 0;
 
   /// Get the current state of the process
   virtual ProcessState get_state() = 0;
+
+  /// Set the ownership of the process
+  virtual void set_owner(const ProcessOwner &owner) = 0;
+
+  /// Get the current ownership of the process
+  virtual ProcessOwner get_owner() = 0;
+
+protected:
+  /// Constructor taking a process owner as parameter
+  IProcess(ProcessOwner /*owner*/) {}
 };
 
 /// @brief Interface to managing class of processes
-/// Functions as adapter to scheduler classes
+/// Functions as adapter/proxy to scheduler classes
 class IProcessManager {
 public:
+  virtual void provide(IProcess &process);
+
+protected:
+  static const ProcessOwner m_ownership = ProcessOwner::process_manager;
 };
 
 #endif // PROCESS_HPP
