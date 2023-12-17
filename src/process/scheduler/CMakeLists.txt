@@ -5,6 +5,8 @@ set(SCHEDULER_LIB ${LIBNAME} CACHE INTERNAL "")
 
 set(SRCS
   scheduler.cpp
+  scheduler_fact_impl.cpp
+  scheduler_fifo.cpp
   )
 
 add_library(
