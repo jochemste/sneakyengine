@@ -1,6 +1,11 @@
-#include "display.hpp"
 #include "process.hpp"
 
-class DisplayProcessImpl : public IProcess {
-  DisplayProcessImpl(ProcessOwner owner);
+#include <memory>
+
+class DisplayProcessFactory {
+public:
+  DisplayProcessFactory(){};
+
+  std::unique_ptr<IProcess> createProcess(const ProcessOwner &owner,
+                                          const std::string &name);
 };
