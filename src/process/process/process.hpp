@@ -40,8 +40,11 @@ enum class ProcessOwner {
 /// Interface to processes to be run. A variation of the command pattern
 class IProcess {
 public:
+  /// Virtual destructor
+  virtual ~IProcess() {}
+
   /// Start the process
-  virtual void execute(int id, const std::string &name) = 0;
+  virtual void execute(int id) = 0;
 
   /// Stop the process
   virtual void kill() = 0;
@@ -49,15 +52,14 @@ public:
   /// Get the current state of the process
   virtual ProcessState get_state() = 0;
 
-  /// Set the ownership of the process
-  virtual void set_owner(const ProcessOwner &owner) = 0;
-
   /// Get the current ownership of the process
   virtual ProcessOwner get_owner() = 0;
 
 protected:
+  /// Empty protected constructor
+  IProcess() {}
   /// Constructor taking a process owner as parameter
-  IProcess(ProcessOwner /*owner*/) {}
+  IProcess(const ProcessOwner & /*owner*/, const std::string & /*name*/) {}
 };
 
 /// @brief Interface to managing class of processes
