@@ -18,6 +18,9 @@ enum class ProcessState {
   /// The process is running
   running,
 
+  /// The process is being stopped
+  stopping,
+
   /// The process has finished execution successfully
   finished,
 
@@ -70,6 +73,17 @@ public:
 
 protected:
   static const ProcessOwner m_ownership = ProcessOwner::process_manager;
+};
+
+/// @brief General process exception class
+class ProcessException : public std::exception {
+public:
+  ProcessException(const char *message);
+  ProcessException(const std::string &message);
+  const char *what();
+
+private:
+  const char *m_message;
 };
 
 #endif // PROCESS_HPP

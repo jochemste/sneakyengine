@@ -18,3 +18,10 @@ void PROC_quit() {
   Log(LogLevel::info) << LOG_HEADER << "Stopping Processes";
   SDL_Quit();
 }
+
+ProcessException::ProcessException(const char *message) : m_message(message) {}
+
+ProcessException::ProcessException(const std::string &message)
+    : ProcessException(message.c_str()) {}
+
+const char *ProcessException::what() { return m_message; }
