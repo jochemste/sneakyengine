@@ -13,7 +13,7 @@ public:
 
 private:
   /// @brief Wait to match framerate
-  void waitFPS();
+  void wait_FPS();
 
   SDL_Window *m_window;
   SDL_Surface *m_surface;

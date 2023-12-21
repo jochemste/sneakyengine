@@ -22,7 +22,7 @@ void DisplaySDLImpl::start() {
                               g_window_flags);
   if (m_window == nullptr) {
     const std::string err_msg("Failed to create window");
-    Log(LogLevel::critical) << err_msg << ": " << SDL_GetError();
+    Log(LogLevel::critical) << LOG_HEADER << err_msg << ": " << SDL_GetError();
     throw DisplayException(err_msg);
   } else {
     m_surface = SDL_GetWindowSurface(m_window);
@@ -30,7 +30,7 @@ void DisplaySDLImpl::start() {
 
   if (m_surface == nullptr) {
     const std::string err_msg("Failed to get surface from window");
-    Log(LogLevel::critical) << err_msg << ": " << SDL_GetError();
+    Log(LogLevel::critical) << LOG_HEADER << err_msg << ": " << SDL_GetError();
     throw DisplayException(err_msg);
   }
 
@@ -41,7 +41,7 @@ void DisplaySDLImpl::stop() {
 
   if (SDL_DestroyWindowSurface(m_window) != 0) {
     const std::string err_msg("Failed to destroy window surface");
-    Log(LogLevel::error) << err_msg;
+    Log(LogLevel::error) << LOG_HEADER << err_msg;
     throw DisplayException(err_msg);
   }
 
@@ -50,11 +50,11 @@ void DisplaySDLImpl::stop() {
 
 void DisplaySDLImpl::refresh() {
   SDL_UpdateWindowSurface(m_window);
-  this->waitFPS();
+  this->wait_FPS();
 }
 
 // PRIVATE
-void DisplaySDLImpl::waitFPS() {
+void DisplaySDLImpl::wait_FPS() {
   auto current_tick = SDL_GetTicks();
   if (current_tick < m_next_frame_tick_nr) {
     SDL_Delay(m_next_frame_tick_nr - current_tick);
