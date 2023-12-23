@@ -24,4 +24,4 @@ ProcessException::ProcessException(const char *message) : m_message(message) {}
 ProcessException::ProcessException(const std::string &message)
     : ProcessException(message.c_str()) {}
 
-const char *ProcessException::what() { return m_message; }
+const char *ProcessException::what() const noexcept { return m_message; }

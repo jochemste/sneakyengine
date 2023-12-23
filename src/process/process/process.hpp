@@ -80,7 +80,7 @@ class ProcessException : public std::exception {
 public:
   ProcessException(const char *message);
   ProcessException(const std::string &message);
-  const char *what();
+  const char *what() const noexcept;
 
 private:
   const char *m_message;
