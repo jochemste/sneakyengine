@@ -8,6 +8,8 @@ add_subdirectory(scheduler)
 
 set(SRCS
   process.cpp
+  processmanager_fact_impl.cpp
+  processmanager_impl.cpp
   )
 
 add_library(

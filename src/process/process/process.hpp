@@ -1,6 +1,7 @@
 #ifndef PROCESS_HPP
 #define PROCESS_HPP
 
+#include <memory>
 #include <string>
 
 /// Temporary C style function. Will be replaced by class
@@ -65,16 +66,6 @@ protected:
   IProcess(const ProcessOwner & /*owner*/, const std::string & /*name*/) {}
 };
 
-/// @brief Interface to managing class of processes
-/// Functions as adapter/proxy to scheduler classes
-class IProcessManager {
-public:
-  virtual void provide(IProcess &process);
-
-protected:
-  static const ProcessOwner m_ownership = ProcessOwner::process_manager;
-};
-
 /// @brief General process exception class
 class ProcessException : public std::exception {
 public:
@@ -85,5 +76,30 @@ public:
 private:
   const char *m_message;
 };
+
+/// @brief Namespace for process module interfaces (currently unused)
+namespace process {
+
+/// @brief Interface to managing class of processes
+/// Functions as adapter/proxy to scheduler classes
+class IProcessManager {
+public:
+  virtual void provide(IProcess &process) = 0;
+
+protected:
+  static const ProcessOwner m_ownership = ProcessOwner::process_manager;
+};
+
+/// @brief Abstract factory to Process Manager
+class IProcessManagerFactory {
+public:
+  /// @brief Create a process manager
+  virtual std::unique_ptr<IProcessManager> create_processmanager() = 0;
+};
+
+/// @brief Get a default process manager factory
+std::unique_ptr<IProcessManagerFactory> PROC_get_processmanager_factory();
+
+} // namespace process
 
 #endif // PROCESS_HPP
