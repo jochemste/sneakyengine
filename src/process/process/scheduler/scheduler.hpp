@@ -2,32 +2,63 @@
 #define SCHEDULER_HPP
 
 #include <memory>
+#include <queue>
+
+namespace scheduler {
 
 /// @brief Scheduler interface
-template <typename T> class IScheduler {
+template <class T> class IScheduler {
 public:
   /// @brief Get next scheduled process
   /// @return The next scheduled process
-  virtual T &get_next() = 0;
+  virtual T *get_next() = 0;
 
   /// @brief Add process to scheduler
   /// @param[in] process The process to schedule
   /// @return integer with unique process id
-  virtual int schedule(T &process, int priority = 0) = 0;
+  virtual int schedule(T &process) = 0;
+
+  /// @brief Add process to scheduler, with a provided priority
+  /// @param[in] process The process to schedule
+  /// @param[in] priority The priority to assign the process
+  /// @return integer with unique process id
+  virtual int schedule(T &process, int priority) = 0;
 
   /// @brief Get the number of running and waiting processes
   virtual unsigned int nr_processes() = 0;
+
+protected:
 };
 
-/// @brief Abstract factory class to generate schedulers
-template <typename T> class ISchedulerFactory {
+/// @brief First In First Out implementation of IScheduler
+/// This class does not clean up provided pointers at the moment
+/// Stack based processes should remain in scope while the scheduler
+/// is in scope, otherwise, they should be allocated and freed afterwards
+template <class T> class FIFOScheduler : public IScheduler<T> {
 public:
-  /// @brief Create a first in first out scheduler
-  virtual IScheduler<T> &createFIFOScheduler() = 0;
+  FIFOScheduler() {}
+  ~FIFOScheduler() {}
+
+  virtual T *get_next() override {
+    auto el = m_queue.front();
+    m_queue.pop();
+    return el;
+  }
+  virtual int schedule(T &process) override {
+    return this->schedule(process, 0);
+  }
+
+  virtual int schedule(T &process, int /*priority*/) override {
+    m_queue.push(&process);
+    return 0;
+  }
+  virtual unsigned int nr_processes() override { return m_queue.size(); }
+
+protected:
+private:
+  std::queue<T *> m_queue;
 };
 
-/// @brief Get the default scheduler factory implementation
-template <typename T>
-std::unique_ptr<ISchedulerFactory<T>> SCHED_get_scheduler_factory();
+} // namespace scheduler
 
 #endif // SCHEDULER_HPP

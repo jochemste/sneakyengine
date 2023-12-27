@@ -5,8 +5,6 @@ set(SCHEDULER_LIB ${LIBNAME} CACHE INTERNAL "")
 
 set(SRCS
   scheduler.cpp
-  scheduler_fact_impl.cpp
-  scheduler_fifo.cpp
   )
 
 add_library(
@@ -18,6 +16,7 @@ target_link_libraries(${LIBNAME}
   PRIVATE
   ${LINK_FOR_ALL}
   )
+
 target_include_directories(
   ${LIBNAME}
   PRIVATE
