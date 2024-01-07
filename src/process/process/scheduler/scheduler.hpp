@@ -2,6 +2,7 @@
 #define SCHEDULER_HPP
 
 #include <memory>
+#include <mutex>
 #include <queue>
 
 namespace scheduler {
@@ -34,12 +35,14 @@ protected:
 /// This class does not clean up provided pointers at the moment
 /// Stack based processes should remain in scope while the scheduler
 /// is in scope, otherwise, they should be allocated and freed afterwards
+/// This class is thread safe
 template <class T> class FIFOScheduler : public IScheduler<T> {
 public:
   FIFOScheduler() {}
   ~FIFOScheduler() {}
 
   virtual T *get_next() override {
+    const std::lock_guard<std::mutex> lock(m_queue_mut);
     auto el = m_queue.front();
     m_queue.pop();
     return el;
@@ -49,6 +52,7 @@ public:
   }
 
   virtual int schedule(T &process, int /*priority*/) override {
+    const std::lock_guard<std::mutex> lock(m_queue_mut);
     m_queue.push(&process);
     return 0;
   }
@@ -57,6 +61,7 @@ public:
 protected:
 private:
   std::queue<T *> m_queue;
+  std::mutex m_queue_mut;
 };
 
 } // namespace scheduler
