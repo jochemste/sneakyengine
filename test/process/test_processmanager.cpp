@@ -16,3 +16,14 @@ TEST_F(TestProcessManager, TestProcessManagerInit) {
 
   ASSERT_NE(pm, nullptr);
 }
+
+TEST_F(TestProcessManager, TestProcessManagerEmptyRun) {
+
+  auto pmf = process::PROC_get_processmanager_factory();
+  auto pm  = pmf->create_processmanager();
+
+  ASSERT_NO_THROW({
+    pm->start();
+    pm->stop();
+  });
+}
