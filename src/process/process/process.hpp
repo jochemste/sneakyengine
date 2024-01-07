@@ -84,6 +84,8 @@ namespace process {
 /// Functions as adapter/proxy to scheduler classes
 class IProcessManager {
 public:
+  virtual void start()                    = 0;
+  virtual void stop()                     = 0;
   virtual void provide(IProcess &process) = 0;
 
 protected:
