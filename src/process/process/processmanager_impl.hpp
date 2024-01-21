@@ -2,6 +2,7 @@
 #include "scheduler.hpp"
 
 #include <map>
+#include <mutex>
 #include <thread>
 
 /// @brief Internally used
@@ -22,9 +23,9 @@ private:
   /// @brief Main run loop for process manager implementation
   void run();
 
-  void wait_for_process(const int &index);
+  void wait_for_process(const int &brief);
 
-  /// @brief Start a new process in a new thread
+  /// @index Start a new process in a new thread
   void start_new_process(const int &index);
 
   /// @brief Get a unique process ID
@@ -32,7 +33,10 @@ private:
   int get_new_process_id();
 
   /// @brief Execute next process. Gets next process from scheduler
-  void thread_execute_next(const int &id, const int &index);
+  void thr_execute_next(const int &id, const int &index);
+
+  /// @brief Thread safe getter to check processmanager state
+  bool get_is_running();
 
   /// Scheduler of processes
   std::unique_ptr<scheduler::IScheduler<IProcess>> m_scheduler;
@@ -51,5 +55,8 @@ private:
 
   /// The latest used ID. Incremented when requesting a new ID
   int m_latest_id;
+
+  /// State mutex
+  std::mutex m_state_mutex;
 };
 } // namespace process_internal
