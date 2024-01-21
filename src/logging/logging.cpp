@@ -1,7 +1,12 @@
 #include "logging.hpp"
 #include "log_sdl_impl.hpp"
 
-LogLevel Log::m_loglevel_app = LogLevel::error;
+#if DEBUG
+#warning This is a debug build. Logging will be verbose
+LogLevel Log::m_loglevel_app = LogLevel::debug;
+#else
+LogLevel Log::m_loglevel_app = LogLevel::warning;
+#endif
 
 Log::Log(LogLevel log_level) : Log(std::make_unique<LogSDLImpl>(), log_level) {}
 
