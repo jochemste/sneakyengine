@@ -137,3 +137,48 @@ TEST_F(TestThreadpool, TestThreadpoolSysNrThreadMultiProcessStopNoWait) {
   EXPECT_EQ(0, tp.get_nr_running());
   EXPECT_EQ(0, tp.get_nr_queued());
 }
+
+TEST_F(TestThreadpool, TestThreadpoolSysNrThreadMultiProcessExecTimeDiff) {
+  std::shared_ptr<MockProcess> process(
+      new MockProcess(ProcessOwner::process_manager, "testProcess1"));
+  threadpool::Threadpool_impl tp = threadpool::Threadpool_impl();
+  auto f1                        = [](int id) {
+    int j = 1;
+    std::cout << "Testing " << id << std::endl;
+    for (int i = 0; i < 10; i++)
+      j *= i;
+  };
+  auto f2 = [](int id) {
+    int j = 1;
+    std::cout << "Slow testing " << id << std::endl;
+    for (int i = 0; i < 10000; i++)
+      j *= i;
+    std::cout << "More stdoutput " << id << std::endl;
+  };
+
+  {
+    testing::InSequence s;
+    EXPECT_CALL(*process.get(), execute(_))
+        .Times(AtLeast(10))
+        .WillRepeatedly(Invoke(f1));
+    EXPECT_CALL(*process.get(), execute(_))
+        .Times(AtLeast(10))
+        .WillRepeatedly(Invoke(f2));
+    EXPECT_CALL(*process.get(), execute(_))
+        .Times(AtLeast(10))
+        .WillRepeatedly(Invoke(f1));
+  }
+  EXPECT_NO_THROW({
+    tp.start();
+    for (int id = 0; id < 100; id++) {
+      tp.add_to_queue(id, process);
+    }
+    while (tp.busy())
+      ;
+
+    tp.stop();
+  });
+
+  EXPECT_EQ(0, tp.get_nr_running());
+  EXPECT_EQ(0, tp.get_nr_queued());
+}
