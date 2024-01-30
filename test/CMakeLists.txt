@@ -6,6 +6,7 @@ set(SRCS
   test_engine.cpp
   process/test_scheduler.cpp
   process/test_processmanager.cpp
+  process/test_threadpool.cpp
   )
 
 add_executable(
@@ -19,6 +20,7 @@ target_link_libraries(
   GTest::gmock_main
   ${SCHEDULER_LIB}
   ${PROCESS_LIB}
+  ${THREADPOOL_LIB}
   )
 
 target_include_directories(
@@ -27,6 +29,7 @@ target_include_directories(
   mocks
   ${SCHEDULER_INCLUDE}
   ${PROCESS_INCLUDE}
+  ${THREADPOOL_INCLUDE}
   )
 
 include(GoogleTest)
