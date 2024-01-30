@@ -112,3 +112,28 @@ TEST_F(TestThreadpool, TestThreadpoolSysNrThreadMultiProcessThrows) {
   EXPECT_EQ(0, tp.get_nr_running());
   EXPECT_EQ(0, tp.get_nr_queued());
 }
+
+// Test a multi threaded (nr based on hardware) pool with multiple processes to
+// run without throwing or segfaulting. Stop without waiting for threadpool to
+// not be busy. Expect at least one process to be executed.
+TEST_F(TestThreadpool, TestThreadpoolSysNrThreadMultiProcessStopNoWait) {
+  std::shared_ptr<MockProcess> process(
+      new MockProcess(ProcessOwner::process_manager, "testProcess1"));
+  threadpool::Threadpool_impl tp = threadpool::Threadpool_impl();
+  auto f = [](int id) { std::cout << "Testing " << id << std::endl; };
+
+  EXPECT_CALL(*process.get(), execute(_))
+      .Times(AtLeast(1))
+      .WillRepeatedly(Invoke(f));
+
+  EXPECT_NO_THROW({
+    tp.start();
+    for (int id = 0; id < 100; id++) {
+      tp.add_to_queue(id, process);
+    }
+    tp.stop();
+  });
+
+  EXPECT_EQ(0, tp.get_nr_running());
+  EXPECT_EQ(0, tp.get_nr_queued());
+}
