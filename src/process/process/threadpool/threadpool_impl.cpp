@@ -10,7 +10,7 @@ Threadpool_impl::Threadpool_impl()
 }
 
 Threadpool_impl::Threadpool_impl(int nr_threads)
-    : m_nr_threads(nr_threads), m_should_stop(false) {
+    : m_nr_threads(nr_threads), m_nr_running(0), m_should_stop(false) {
   Log(LogLevel::debug) << LOG_START;
 
   Log(LogLevel::debug) << LOG_END;
@@ -55,6 +55,26 @@ void Threadpool_impl::add_to_queue(const int &id,
   Log(LogLevel::debug) << LOG_END;
 }
 
+int Threadpool_impl::get_nr_queued() {
+  int nr_queued;
+  {
+    std::unique_lock<std::mutex> lock(m_queue_mutex);
+    nr_queued = m_queue.size();
+  }
+  return nr_queued;
+}
+
+int Threadpool_impl::get_nr_running() { return m_nr_running; }
+
+bool Threadpool_impl::busy() {
+  bool isbusy;
+  {
+    std::unique_lock<std::mutex> lock(m_queue_mutex);
+    isbusy = !m_queue.empty();
+  }
+  return isbusy;
+}
+
 void Threadpool_impl::thread_run() {
   Log(LogLevel::debug) << LOG_START;
 
@@ -78,7 +98,9 @@ void Threadpool_impl::thread_run() {
 
     if ((process != nullptr)) {
       Log(LogLevel::debug) << LOG_HEADER << "Executing process with id " << id;
+      m_nr_running++;
       process->execute(id);
+      m_nr_running--;
     } else {
       Log(LogLevel::error) << LOG_HEADER << "Could not start process with id "
                            << id << ". Process is null or id is invalid";
@@ -87,4 +109,5 @@ void Threadpool_impl::thread_run() {
 
   Log(LogLevel::debug) << LOG_END;
 }
+
 } // namespace threadpool

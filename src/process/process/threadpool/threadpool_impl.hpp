@@ -21,11 +21,15 @@ public:
   virtual void stop() override;
   virtual void add_to_queue(const int &id,
                             std::shared_ptr<IProcess> process) override;
+  virtual int get_nr_queued() override;
+  virtual int get_nr_running() override;
+  virtual bool busy() override;
 
 private:
   void thread_run();
 
   const int m_nr_threads;
+  std::atomic<int> m_nr_running;
   bool m_should_stop;
   std::mutex m_queue_mutex;
   std::vector<std::thread> m_threads;
