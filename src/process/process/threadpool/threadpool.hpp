@@ -1,0 +1,32 @@
+#ifndef THREADPOOL_HPP
+#define THREADPOOL_HPP
+
+#include "process.hpp"
+
+#include <memory>
+
+namespace threadpool {
+
+class IThreadpool {
+public:
+  virtual ~IThreadpool();
+  virtual void start()                                         = 0;
+  virtual void stop()                                          = 0;
+  virtual void add_to_queue(std::shared_ptr<IProcess> process) = 0;
+
+protected:
+  IThreadpool();
+  IThreadpool(int nr_processes);
+};
+
+class ThreadpoolFactory {
+public:
+  std::unique_ptr<IThreadpool> create();
+  std::unique_ptr<IThreadpool> create(int nr_threads);
+
+private:
+};
+
+} // namespace threadpool
+
+#endif // THREADPOOL_HPP

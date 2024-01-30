@@ -5,6 +5,7 @@ set(PROCESS_LIB ${LIBNAME} CACHE INTERNAL "")
 
 # include subdirectories
 add_subdirectory(scheduler)
+add_subdirectory(threadpool)
 
 set(SRCS
   process.cpp
