@@ -9,14 +9,15 @@ namespace threadpool {
 
 class IThreadpool {
 public:
-  virtual ~IThreadpool();
+  virtual ~IThreadpool() {}
   virtual void start()                                         = 0;
   virtual void stop()                                          = 0;
-  virtual void add_to_queue(std::shared_ptr<IProcess> process) = 0;
+  virtual void add_to_queue(const int &id,
+                            std::shared_ptr<IProcess> process) = 0;
 
 protected:
-  IThreadpool();
-  IThreadpool(int nr_processes);
+  IThreadpool() {}
+  IThreadpool(int /*nr_threads*/) {}
 };
 
 class ThreadpoolFactory {
