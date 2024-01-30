@@ -23,10 +23,12 @@ target_link_libraries(${LIBNAME}
   SDL3::SDL3
   ${LINK_FOR_ALL}
   ${SCHEDULER_LIB}
+  ${THREADPOOL_LIB}
   )
 target_include_directories(
   ${LIBNAME}
   PRIVATE
   ${INCLUDE_FOR_ALL}
   ${SCHEDULER_INCLUDE}
+  ${THREADPOOL_INCLUDE}
   )
