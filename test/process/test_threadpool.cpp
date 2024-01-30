@@ -24,8 +24,8 @@ TEST_F(TestThreadpool, TestThreadpoolSingleThreadNoProcess) {
   });
 }
 
-// Test a multi threaded pool without processes to run without throwing or
-// segfaulting
+// Test a multi threaded (nr based on hardware) pool without processes to run
+// without throwing or segfaulting
 TEST_F(TestThreadpool, TestThreadpoolSysNrThreadNoProcess) {
   threadpool::Threadpool_impl tp = threadpool::Threadpool_impl();
 
@@ -35,6 +35,8 @@ TEST_F(TestThreadpool, TestThreadpoolSysNrThreadNoProcess) {
   });
 }
 
+// Test a multi threaded (nr based on hardware) pool with one process to run
+// without throwing or segfaulting. Expect process to be executed.
 TEST_F(TestThreadpool, TestThreadpoolSysNrThreadOneProcess) {
   int id = 1;
   std::shared_ptr<MockProcess> process(
@@ -52,6 +54,8 @@ TEST_F(TestThreadpool, TestThreadpoolSysNrThreadOneProcess) {
   });
 }
 
+// Test a multi threaded (nr based on hardware) pool with multiple processes to
+// run without throwing or segfaulting. Expect each process to be executed.
 TEST_F(TestThreadpool, TestThreadpoolSysNrThreadMultiProcess) {
   std::shared_ptr<MockProcess> process(
       new MockProcess(ProcessOwner::process_manager, "testProcess1"));
@@ -77,6 +81,9 @@ TEST_F(TestThreadpool, TestThreadpoolSysNrThreadMultiProcess) {
   EXPECT_EQ(0, tp.get_nr_queued());
 }
 
+// Test a multi threaded (nr based on hardware) pool with multiple processes to
+// run without segfaulting. Expect each process to be executed. One process will
+// throw, which should not affect execution by threadpool
 TEST_F(TestThreadpool, TestThreadpoolSysNrThreadMultiProcessThrows) {
   std::shared_ptr<MockProcess> process(
       new MockProcess(ProcessOwner::process_manager, "testProcess1"));
