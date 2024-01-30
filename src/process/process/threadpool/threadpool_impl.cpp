@@ -70,7 +70,7 @@ bool Threadpool_impl::busy() {
   bool isbusy;
   {
     std::unique_lock<std::mutex> lock(m_queue_mutex);
-    isbusy = !m_queue.empty();
+    isbusy = (!m_queue.empty()) || (m_nr_running > 0);
   }
   return isbusy;
 }
