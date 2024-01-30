@@ -99,7 +99,12 @@ void Threadpool_impl::thread_run() {
     if ((process != nullptr)) {
       Log(LogLevel::debug) << LOG_HEADER << "Executing process with id " << id;
       m_nr_running++;
-      process->execute(id);
+      try {
+        process->execute(id);
+      } catch (std::exception &e) {
+        Log(LogLevel::error) << LOG_HEADER << "Process with id " << id
+                             << " failed: " << e.what();
+      }
       m_nr_running--;
     } else {
       Log(LogLevel::error) << LOG_HEADER << "Could not start process with id "
