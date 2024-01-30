@@ -7,12 +7,16 @@
 #include <memory>
 #include <sstream>
 
-#define LOG_HEADER \
-  __FILE__ << ":" << __builtin_FUNCTION() << ":" << __LINE__ << " >> "
+#define LOG_HEADER                \
+  LOG_get_relative_path(__FILE__) \
+      << ":" << __builtin_FUNCTION() << ":" << __LINE__ << " >> "
 #define LOG_START LOG_HEADER << "Start function"
 #define LOG_END   LOG_HEADER << "End function"
 
 enum class LogLevel { critical, error, warning, info, debug };
+
+/// @brief Return the relative path to a file, from the current path
+const std::string LOG_get_relative_path(const std::string &filepath);
 
 /// @brief Main logging
 class Log {

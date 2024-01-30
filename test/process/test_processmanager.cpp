@@ -39,8 +39,13 @@ TEST_F(TestProcessManager, TestProcessManagerSingleRun) {
 
   EXPECT_CALL(process, get_state())
       .WillRepeatedly(Return(ProcessState::running));
-  EXPECT_CALL(process, kill());
-  EXPECT_CALL(process, execute(_));
+  {
+    testing::InSequence s;
+    EXPECT_CALL(process, execute(_)).Times(1);
+    EXPECT_CALL(process, kill()).Times(1);
+    EXPECT_CALL(process, get_state())
+        .WillRepeatedly(Return(ProcessState::finished));
+  }
 
   ASSERT_NO_THROW({
     pm->start();

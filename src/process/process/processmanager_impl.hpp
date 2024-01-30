@@ -20,7 +20,8 @@ public:
   virtual void provide(IProcess &process) override;
 
 private:
-  /// @brief Main run loop for process manager implementation
+  /// @brief Main run loop for process manager implementation. Is started as a
+  /// separate thread by start() and stopped by stop()
   void run();
 
   void wait_for_process(const int &brief);
@@ -28,15 +29,16 @@ private:
   /// @index Start a new process in a new thread
   void start_new_process(const int &index);
 
+  /// @brief Execute next process. Gets next process from scheduler. Runs in
+  /// separate thread
+  void thr_execute_next(const int &id, const int &index);
+
   /// @brief Get a unique process ID
   /// Currently a simple increment of m_latest_id
   int get_new_process_id();
 
-  /// @brief Execute next process. Gets next process from scheduler
-  void thr_execute_next(const int &id, const int &index);
-
   /// @brief Thread safe getter to check processmanager state
-  bool get_is_running();
+  bool stop_running();
 
   /// Scheduler of processes
   std::unique_ptr<scheduler::IScheduler<IProcess>> m_scheduler;

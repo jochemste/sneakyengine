@@ -1,12 +1,18 @@
 #include "logging.hpp"
 #include "log_sdl_impl.hpp"
 
+#include <filesystem>
+
 #if DEBUG
 #warning This is a debug build. Logging will be verbose
 LogLevel Log::m_loglevel_app = LogLevel::debug;
 #else
 LogLevel Log::m_loglevel_app = LogLevel::warning;
 #endif
+
+const std::string LOG_get_relative_path(const std::string &filepath) {
+  return std::filesystem::relative(filepath, std::filesystem::current_path());
+}
 
 Log::Log(LogLevel log_level) : Log(std::make_unique<LogSDLImpl>(), log_level) {}
 

@@ -5,6 +5,8 @@
 #include <chrono>
 #include <thread>
 
+// PUBLIC
+
 process_internal::ProcessManagerImpl::ProcessManagerImpl()
     : m_scheduler(std::make_unique<scheduler::FIFOScheduler<IProcess>>()),
       m_is_running(false), m_latest_id(0) {
@@ -57,11 +59,13 @@ void process_internal::ProcessManagerImpl::provide(IProcess &process) {
   Log(LogLevel::debug) << LOG_END;
 }
 
+// PRIVATE
+
 void process_internal::ProcessManagerImpl::run() {
   Log(LogLevel::debug) << LOG_START;
   Log(LogLevel::debug) << LOG_HEADER << "Starting run";
 
-  while (get_is_running() == true) {
+  while (!stop_running()) {
     // Check state of current processes and clean finished
     for (size_t index = 0; index < m_processes.size(); index++) {
       if (m_processes.at(index) == nullptr) {
@@ -103,7 +107,10 @@ void process_internal::ProcessManagerImpl::wait_for_process(const int &index) {
 void process_internal::ProcessManagerImpl::start_new_process(const int &index) {
   Log(LogLevel::debug) << LOG_START;
   Log(LogLevel::debug) << LOG_HEADER << "Starting new process";
-  auto next_id                        = get_new_process_id();
+
+  auto next_id = get_new_process_id();
+
+  // Create new thread
   std::shared_ptr<std::thread> thread = std::make_shared<std::thread>(
       &process_internal::ProcessManagerImpl::thr_execute_next, this, next_id,
       index);
@@ -113,7 +120,7 @@ void process_internal::ProcessManagerImpl::start_new_process(const int &index) {
   while (m_processes.at(index) == nullptr ||
          m_processes.at(index)->get_state() == ProcessState::not_running) {
     std::this_thread::sleep_for(std::chrono::nanoseconds(100));
-    if (get_is_running() == false) {
+    if (stop_running()) {
       Log(LogLevel::debug) << LOG_END;
       return;
     }
@@ -124,26 +131,13 @@ void process_internal::ProcessManagerImpl::start_new_process(const int &index) {
   Log(LogLevel::debug) << LOG_END;
 }
 
-int process_internal::ProcessManagerImpl::get_new_process_id() {
-  Log(LogLevel::debug) << LOG_START;
-  Log(LogLevel::debug) << LOG_HEADER << "Getting new PID";
-  m_latest_id = 0;
-
-  // Loops until the id was not found
-  while (m_threads.find(++m_latest_id) != m_threads.end())
-    ;
-  Log(LogLevel::debug) << LOG_HEADER << "New PID: " << m_latest_id;
-  Log(LogLevel::debug) << LOG_END;
-  return m_latest_id;
-}
-
 void process_internal::ProcessManagerImpl::thr_execute_next(const int &id,
                                                             const int &index) {
   Log(LogLevel::debug) << LOG_START;
   std::shared_ptr<IProcess> next_process = nullptr;
 
   while (m_scheduler->nr_processes() <= 0) {
-    if (get_is_running() == false) {
+    if (stop_running()) {
       Log(LogLevel::debug) << LOG_END;
       return;
     }
@@ -169,7 +163,20 @@ void process_internal::ProcessManagerImpl::thr_execute_next(const int &id,
   Log(LogLevel::debug) << LOG_END;
 }
 
-bool process_internal::ProcessManagerImpl::get_is_running() {
+int process_internal::ProcessManagerImpl::get_new_process_id() {
+  Log(LogLevel::debug) << LOG_START;
+  Log(LogLevel::debug) << LOG_HEADER << "Getting new PID";
+  m_latest_id = 0;
+
+  // Loops until the id was not found
+  while (m_threads.find(++m_latest_id) != m_threads.end())
+    ;
+  Log(LogLevel::debug) << LOG_HEADER << "New PID: " << m_latest_id;
+  Log(LogLevel::debug) << LOG_END;
+  return m_latest_id;
+}
+
+bool process_internal::ProcessManagerImpl::stop_running() {
   const std::lock_guard<std::mutex> lock(m_state_mutex);
-  return m_is_running;
+  return !m_is_running;
 }

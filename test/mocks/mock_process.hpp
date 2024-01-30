@@ -6,6 +6,10 @@
 
 class MockProcess : public IProcess {
 public:
+  MockProcess()                         = delete;
+  MockProcess(const MockProcess &other) = delete;
+  MockProcess(MockProcess &&other)      = default;
+
   MockProcess(const ProcessOwner &owner, const std::string &name)
       : m_name(name), m_owner(owner), m_id(-1) {}
   MOCK_METHOD(void, execute, (int id), (override));
