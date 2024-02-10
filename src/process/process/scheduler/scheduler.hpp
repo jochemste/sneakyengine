@@ -26,7 +26,7 @@ public:
   virtual int schedule(T &process, int priority) = 0;
 
   /// @brief Get the number of running and waiting processes
-  virtual unsigned int nr_processes() = 0;
+  virtual size_t nr_processes() = 0;
 
 protected:
 };
@@ -56,7 +56,7 @@ public:
     m_queue.push(&process);
     return 0;
   }
-  virtual unsigned int nr_processes() override { return m_queue.size(); }
+  virtual size_t nr_processes() override { return m_queue.size(); }
 
 protected:
 private:
