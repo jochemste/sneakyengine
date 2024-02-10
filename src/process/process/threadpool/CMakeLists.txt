@@ -22,5 +22,6 @@ target_include_directories(
   ${LIBNAME}
   PRIVATE
   ${INCLUDE_FOR_ALL}
+  ${THREADPOOL_INCLUDE}
   ${PROCESS_INCLUDE}
   )

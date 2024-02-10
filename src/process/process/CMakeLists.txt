@@ -25,10 +25,12 @@ target_link_libraries(${LIBNAME}
   ${SCHEDULER_LIB}
   ${THREADPOOL_LIB}
   )
+
 target_include_directories(
   ${LIBNAME}
   PRIVATE
   ${INCLUDE_FOR_ALL}
   ${SCHEDULER_INCLUDE}
   ${THREADPOOL_INCLUDE}
+  ${PROCESS_INCLUDE}
   )
