@@ -59,7 +59,7 @@ int Threadpool_impl::get_nr_queued() {
   int nr_queued;
   {
     std::unique_lock<std::mutex> lock(m_queue_mutex);
-    nr_queued = m_queue.size();
+    nr_queued = static_cast<int>(m_queue.size());
   }
   return nr_queued;
 }
