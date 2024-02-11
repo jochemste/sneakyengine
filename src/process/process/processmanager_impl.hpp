@@ -1,9 +1,11 @@
 #include "process.hpp"
 #include "scheduler.hpp"
+#include "threadpool.hpp"
 
 #include <map>
 #include <mutex>
 #include <thread>
+#include <vector>
 
 /// @brief Internally used
 namespace process_internal {
@@ -18,39 +20,30 @@ public:
   virtual void start() override;
   virtual void stop() override;
   virtual void provide(IProcess &process) override;
+  virtual bool busy() override;
 
 private:
-  /// @brief Main run loop for process manager implementation. Is started as a
+  /// @brief Main run loop for process manager implementation. Is started as
   /// separate thread by start() and stopped by stop()
-  void run();
-
-  void wait_for_process(const int &brief);
-
-  /// @index Start a new process in a new thread
-  void start_new_process(const int &index);
-
-  /// @brief Execute next process. Gets next process from scheduler. Runs in
-  /// separate thread
-  void thr_execute_next(const int &id, const int &index);
+  void run_thread();
 
   /// @brief Get a unique process ID
-  /// Currently a simple increment of m_latest_id
   int get_new_process_id();
-
-  /// @brief Thread safe getter to check processmanager state
-  bool stop_running();
 
   /// Scheduler of processes
   std::unique_ptr<scheduler::IScheduler<IProcess>> m_scheduler;
 
+  /// Threadpool
+  std::unique_ptr<threadpool::IThreadpool> m_threadpool;
+
+  /// Maximum nr of threads in the threadpool
+  const int m_max_threads = MAX_THREADS;
+
   /// Main running thread
   std::unique_ptr<std::thread> m_main_thread;
 
-  /// The pool of threads, mapped to process ID
-  std::map<int, std::shared_ptr<std::thread>> m_threads;
-
-  /// The processes currently running
-  std::array<std::shared_ptr<IProcess>, MAX_THREADS> m_processes;
+  // /// The processes currently running
+  std::map<int, std::shared_ptr<IProcess>> m_processes;
 
   /// Boolean, indicating if process manager is running at the moment
   std::atomic<bool> m_is_running;

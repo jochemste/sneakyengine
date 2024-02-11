@@ -87,6 +87,7 @@ public:
   virtual void start()                    = 0;
   virtual void stop()                     = 0;
   virtual void provide(IProcess &process) = 0;
+  virtual bool busy()                     = 0;
 
 protected:
   static const ProcessOwner m_ownership = ProcessOwner::process_manager;
