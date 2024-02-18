@@ -1,8 +1,6 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include <vector>
-
 #include "process.hpp"
 
 #include "mock_process.hpp"
@@ -11,7 +9,14 @@ using ::testing::_;
 using ::testing::Invoke;
 using ::testing::Return;
 
-class TestProcessManager : public testing::Test {};
+class TestProcessManager : public testing::Test {
+protected:
+  std::string get_procname(std::string basename, int index) {
+    std::stringstream ss;
+    ss << basename << index;
+    return ss.str();
+  }
+};
 
 /// Test initialisation of process manager and factory
 TEST_F(TestProcessManager, TestProcessManagerInit) {
