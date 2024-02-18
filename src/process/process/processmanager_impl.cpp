@@ -15,13 +15,16 @@ process_internal::ProcessManagerImpl::ProcessManagerImpl()
   threadpool::ThreadpoolFactory tpfact;
   m_threadpool = tpfact.create();
 
-  m_processes.clear();
+  if (m_processes.size()) {
+    m_processes.clear();
+  }
 
   Log(LogLevel::debug) << LOG_END;
 }
 
 process_internal::ProcessManagerImpl::~ProcessManagerImpl() {
   Log(LogLevel::debug) << LOG_START;
+  m_processes.clear();
   Log(LogLevel::debug) << LOG_END;
 }
 
@@ -62,6 +65,8 @@ void process_internal::ProcessManagerImpl::provide(IProcess &process) {
 }
 
 bool process_internal::ProcessManagerImpl::busy() {
+  Log(LogLevel::debug) << LOG_START;
+  Log(LogLevel::debug) << LOG_END;
   return (m_processes.size() > 0);
 }
 
@@ -85,23 +90,15 @@ void process_internal::ProcessManagerImpl::run_thread() {
       m_threadpool->add_to_queue(new_id, m_processes.at(new_id));
     }
 
-    // Cleanup finished processes
-    for (auto &[id, proc] : m_processes) {
-      if (proc->get_state() == ProcessState::finished) {
-        Log(LogLevel::debug)
-            << LOG_HEADER << "Cleaning finished process " << id;
-        m_processes.erase(id);
-      } else if (proc->get_state() == ProcessState::failed) {
-        Log(LogLevel::debug) << LOG_HEADER << "Cleaning failed process " << id;
-        m_processes.erase(id);
-      }
-    }
+    // clean finished or failed processes
+    clean();
   }
 
   Log(LogLevel::debug) << LOG_HEADER << "Stop was called, killing processes";
 
   // Stop was called, kill all processes
   for (auto &[id, proc] : m_processes) {
+    Log(LogLevel::debug) << LOG_HEADER << "Killing process with PID " << id;
     proc->kill();
   }
 
@@ -111,6 +108,29 @@ void process_internal::ProcessManagerImpl::run_thread() {
 
   while (m_threadpool->busy()) {
     std::this_thread::sleep_for(std::chrono::seconds(1));
+  }
+
+  Log(LogLevel::debug) << LOG_END;
+}
+
+void process_internal::ProcessManagerImpl::clean() {
+  Log(LogLevel::debug) << LOG_START;
+
+  // determine which processes to clean
+  std::vector<int> to_clean;
+  for (auto &[id, proc] : m_processes) {
+    if (proc->get_state() == ProcessState::finished) {
+      Log(LogLevel::debug) << LOG_HEADER << "Cleaning finished process " << id;
+      to_clean.push_back(id);
+    } else if (proc->get_state() == ProcessState::failed) {
+      Log(LogLevel::debug) << LOG_HEADER << "Cleaning failed process " << id;
+      to_clean.push_back(id);
+    }
+  }
+
+  // Cleanup finished processes
+  for (const auto &id : to_clean) {
+    // m_processes.erase(id);
   }
 
   Log(LogLevel::debug) << LOG_END;

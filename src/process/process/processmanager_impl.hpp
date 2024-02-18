@@ -27,6 +27,9 @@ private:
   /// separate thread by start() and stopped by stop()
   void run_thread();
 
+  /// @brief Clean processes from map. Only called from run_thread
+  void clean();
+
   /// @brief Get a unique process ID
   int get_new_process_id();
 
