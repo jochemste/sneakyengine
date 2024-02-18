@@ -56,22 +56,34 @@ void Threadpool_impl::add_to_queue(const int &id,
 }
 
 int Threadpool_impl::get_nr_queued() {
+  Log(LogLevel::debug) << LOG_START;
+
   int nr_queued;
   {
     std::unique_lock<std::mutex> lock(m_queue_mutex);
     nr_queued = static_cast<int>(m_queue.size());
   }
+
+  Log(LogLevel::debug) << LOG_END;
   return nr_queued;
 }
 
-int Threadpool_impl::get_nr_running() { return m_nr_running; }
+int Threadpool_impl::get_nr_running() {
+  Log(LogLevel::debug) << LOG_START;
+  Log(LogLevel::debug) << LOG_END;
+  return m_nr_running;
+}
 
 bool Threadpool_impl::busy() {
+  Log(LogLevel::debug) << LOG_START;
+
   bool isbusy;
   {
     std::unique_lock<std::mutex> lock(m_queue_mutex);
     isbusy = (!m_queue.empty()) || (m_nr_running > 0);
   }
+
+  Log(LogLevel::debug) << LOG_END;
   return isbusy;
 }
 
