@@ -18,6 +18,7 @@ target_link_libraries(
   test_engine
   GTest::gtest_main
   GTest::gmock_main
+  ${LOGGING_LIB}
   ${SCHEDULER_LIB}
   ${PROCESS_LIB}
   ${THREADPOOL_LIB}
@@ -27,6 +28,7 @@ target_include_directories(
   test_engine
   PRIVATE
   mocks
+  ${LOGGING_INCLUDE}
   ${SCHEDULER_INCLUDE}
   ${PROCESS_INCLUDE}
   ${THREADPOOL_INCLUDE}

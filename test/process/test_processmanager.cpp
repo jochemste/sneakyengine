@@ -58,18 +58,17 @@ TEST_F(TestProcessManager, TestProcessManagerSingleRunExec) {
     EXPECT_CALL(process, get_state()).WillRepeatedly(Invoke(get_state));
   }
 
-  ASSERT_NO_THROW({
-    pm->start();
-    pm->provide(process);
+  pm->start();
+  pm->provide(process);
 
-    // wait for procman to init process
-    while (!pm->busy())
-      ;
-    // wait for process to finish
-    while (state != ProcessState::finished)
-      ;
-    pm->stop();
-  });
+  // wait for procman to init process
+  while (!pm->busy())
+    ;
+  // wait for process to finish
+  while (state != ProcessState::finished)
+    ;
+
+  pm->stop();
 }
 
 TEST_F(TestProcessManager, TestProcessManagerSingleEarlyStop) {
@@ -83,66 +82,71 @@ TEST_F(TestProcessManager, TestProcessManagerSingleEarlyStop) {
   EXPECT_CALL(process, get_state())
       .WillRepeatedly(Return(ProcessState::not_running));
 
-  ASSERT_NO_THROW({
-    pm->start();
-    pm->provide(process);
-    // wait for procman to init process
-    while (!pm->busy())
-      ;
-    pm->stop();
-  });
+  pm->start();
+  pm->provide(process);
+
+  // wait for procman to init process
+  while (!pm->busy())
+    ;
+
+  // Do not wait for process to finish
+
+  pm->stop();
 }
 
-// TEST_F(TestProcessManager, TestProcessManagerMultipleRun) {
+TEST_F(TestProcessManager, TestProcessManagerMultipleRun) {
+  const int nr_procs = 200;
+  auto pmf           = process::PROC_get_processmanager_factory();
+  auto pm            = pmf->create_processmanager();
 
-//   auto pmf = process::PROC_get_processmanager_factory();
-//   auto pm  = pmf->create_processmanager();
+  int index             = 0; // index of the current process
+  std::string name_base = "testProcess"; // basename of the processes
+  std::array<ProcessState, nr_procs> states; // states of the processes
+  std::array<MockProcess *, nr_procs> processes; // the process objects
 
-//   // index of the current process
-//   int index                          = 0;
-//   std::array<ProcessState, 3> states = {ProcessState::not_running,
-//                                         ProcessState::not_running,
-//                                         ProcessState::not_running};
-//   auto exec                          = [&states, index](int id) {
-//     states[index] = ProcessState::finished;
-//   };
-//   auto get_state = [&states, index]() { return states[index]; };
+  // initialise test
+  for (int i = 0; i < nr_procs; i++) {
+    states[i]    = ProcessState::not_running;
+    processes[i] = new MockProcess(ProcessOwner::process_manager,
+                                   get_procname(name_base, index));
+  }
 
-//   std::array<MockProcess, 3> processes = {
-//       MockProcess(ProcessOwner::process_manager, "testProcess1"),
-//       MockProcess(ProcessOwner::process_manager, "testProcess2"),
-//       MockProcess(ProcessOwner::process_manager, "testProcess3"),
-//   };
+  index = 0;
+  for (auto &process : processes) {
+    //   testing::InSequence s;
+    EXPECT_CALL(*process, get_state())
+        .WillRepeatedly(Invoke([&states, index]() {
+          // std::cout << "GET_STATE INDEX " << index << std::endl;
+          return states[index];
+        }));
+    EXPECT_CALL(*process, kill());
+    EXPECT_CALL(*process, execute(_)).WillOnce(Invoke([&states, index](int id) {
+      std::cout << "EXEC INDEX " << index << " ID " << id << std::endl;
+      states[index] = ProcessState::finished;
+    }));
+    index++;
+  }
 
-//   index = 0;
-//   EXPECT_CALL(processes[index],
-//   get_state()).WillRepeatedly(Invoke(get_state));
-//   {
-//     testing::InSequence s;
-//     EXPECT_CALL(processes[index], execute(_)).WillOnce(Invoke(exec));
-//     EXPECT_CALL(processes[index], kill()).Times(1);
-//     EXPECT_CALL(processes[index], get_state()).WillOnce(Invoke(get_state));
-//   }
-//   // for (auto &process : processes) {
-//   //   EXPECT_CALL(process, get_state())
-//   //       .WillRepeatedly(Return(ProcessState::running));
-//   //   EXPECT_CALL(process, kill());
-//   //   EXPECT_CALL(process, execute(_));
-//   // }
+  pm->start();
 
-//   ASSERT_NO_THROW({
-//     for (auto &process : processes) {
-//       pm->start();
-//       pm->provide(process);
-//       // wait for procman to init first process
-//       while (!pm->busy())
-//         ;
+  for (auto &process : processes) {
+    pm->provide(*process);
+  }
 
-//       // wait for processes to finish
-//       // while (state != ProcessState::finished)
-//       //   ;
+  // wait for procman to init first process
+  while (!pm->busy())
+    ;
 
-//       pm->stop();
-//     }
-//   });
-// }
+  // wait for processes to finish
+  for (index = 0; index < nr_procs; index++) {
+    while (states[index] != ProcessState::finished)
+      ;
+  }
+
+  // stop procman
+  pm->stop();
+
+  // cleanup
+  for (int i = 0; i < nr_procs; i++)
+    delete processes[i];
+}
