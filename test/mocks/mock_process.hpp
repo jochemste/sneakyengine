@@ -16,6 +16,7 @@ public:
   MOCK_METHOD(void, kill, (), (override));
   MOCK_METHOD(ProcessState, get_state, (), (override));
   MOCK_METHOD(ProcessOwner, get_owner, (), (override));
+  MOCK_METHOD(void, get_name, (std::string & name), (override));
 
 protected:
 private:

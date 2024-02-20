@@ -17,6 +17,7 @@ public:
   virtual void kill() override;
   virtual ProcessState get_state() override;
   virtual ProcessOwner get_owner() override;
+  virtual void get_name(std::string &name) override;
 
 private:
   void update_state(const ProcessState &state);
@@ -90,6 +91,8 @@ ProcessState DisplayProcessImpl::get_state() {
 }
 
 ProcessOwner DisplayProcessImpl::get_owner() { return m_owner; }
+
+void DisplayProcessImpl::get_name(std::string &name) { name = m_name; }
 
 void DisplayProcessImpl::update_state(const ProcessState &state) {
   const std::lock_guard<std::mutex> lock(m_state_mutex);

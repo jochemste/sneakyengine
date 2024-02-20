@@ -59,6 +59,9 @@ public:
   /// Get the current ownership of the process
   virtual ProcessOwner get_owner() = 0;
 
+  /// Get the name of the process
+  virtual void get_name(std::string &name) = 0;
+
 protected:
   /// Empty protected constructor
   IProcess() {}
