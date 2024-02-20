@@ -15,16 +15,14 @@ process_internal::ProcessManagerImpl::ProcessManagerImpl()
   threadpool::ThreadpoolFactory tpfact;
   m_threadpool = tpfact.create();
 
-  if (m_processes.size()) {
-    m_processes.clear();
-  }
-
   Log(LogLevel::debug) << LOG_END;
 }
 
 process_internal::ProcessManagerImpl::~ProcessManagerImpl() {
   Log(LogLevel::debug) << LOG_START;
-  m_processes.clear();
+  if (m_processes.size()) {
+    m_processes.clear();
+  }
   Log(LogLevel::debug) << LOG_END;
 }
 
@@ -130,7 +128,7 @@ void process_internal::ProcessManagerImpl::clean() {
 
   // Cleanup finished processes
   for (const auto &id : to_clean) {
-    // m_processes.erase(id);
+    m_processes.erase(id);
   }
 
   Log(LogLevel::debug) << LOG_END;
