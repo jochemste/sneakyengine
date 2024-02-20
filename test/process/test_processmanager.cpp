@@ -39,6 +39,7 @@ TEST_F(TestProcessManager, TestProcessManagerEmptyRun) {
   });
 }
 
+/// Test a single process run
 TEST_F(TestProcessManager, TestProcessManagerSingleRunExec) {
 
   auto pmf     = process::PROC_get_processmanager_factory();
@@ -71,6 +72,7 @@ TEST_F(TestProcessManager, TestProcessManagerSingleRunExec) {
   pm->stop();
 }
 
+/// Test early stopping of procman
 TEST_F(TestProcessManager, TestProcessManagerSingleEarlyStop) {
 
   auto pmf     = process::PROC_get_processmanager_factory();
@@ -94,6 +96,7 @@ TEST_F(TestProcessManager, TestProcessManagerSingleEarlyStop) {
   pm->stop();
 }
 
+/// Test with large amount of processes
 TEST_F(TestProcessManager, TestProcessManagerMultipleRun) {
   const int nr_procs = 1000;
   auto pmf           = process::PROC_get_processmanager_factory();
@@ -115,10 +118,7 @@ TEST_F(TestProcessManager, TestProcessManagerMultipleRun) {
   for (auto &process : processes) {
     //   testing::InSequence s;
     EXPECT_CALL(*process, get_state())
-        .WillRepeatedly(Invoke([&states, index]() {
-          // std::cout << "GET_STATE INDEX " << index << std::endl;
-          return states[index];
-        }));
+        .WillRepeatedly(Invoke([&states, index]() { return states[index]; }));
     EXPECT_CALL(*process, kill()).WillOnce(Invoke([&states, index]() {
       states[index] = ProcessState::finished;
     }));
@@ -150,4 +150,54 @@ TEST_F(TestProcessManager, TestProcessManagerMultipleRun) {
   // cleanup
   for (int i = 0; i < nr_procs; i++)
     delete processes[i];
+}
+
+/// Test a number of processes that finish before stop is called
+TEST_F(TestProcessManager, TestProcessManagerMultipleRunProcFinished) {
+  const int nr_procs = 100;
+  auto pmf           = process::PROC_get_processmanager_factory();
+  auto pm            = pmf->create_processmanager();
+
+  int index             = 0; // index of the current process
+  std::string name_base = "testProcess"; // basename of the processes
+  std::array<ProcessState, nr_procs> states; // states of the processes
+  std::array<MockProcess *, nr_procs> processes; // the process objects
+
+  // initialise test
+  for (int i = 0; i < nr_procs; i++) {
+    states[i]    = ProcessState::not_running;
+    processes[i] = new MockProcess(ProcessOwner::process_manager,
+                                   get_procname(name_base, index));
+  }
+
+  index = 0;
+  for (auto &process : processes) {
+    //   testing::InSequence s;
+    EXPECT_CALL(*process, get_state())
+        .WillRepeatedly(Invoke([&states, index]() { return states[index]; }));
+    EXPECT_CALL(*process, kill()).Times(0);
+    EXPECT_CALL(*process, execute(_)).WillOnce(Invoke([&states, index](int id) {
+      states[index] = ProcessState::finished;
+    }));
+    index++;
+  }
+
+  pm->start();
+
+  for (auto &process : processes) {
+    pm->provide(*process);
+  }
+
+  // wait for procman to init first process
+  while (!pm->busy())
+    ;
+
+  // wait for processes to finish
+  for (index = 0; index < nr_procs; index++) {
+    while (states[index] != ProcessState::finished)
+      ;
+  }
+
+  // stop procman
+  pm->stop();
 }
