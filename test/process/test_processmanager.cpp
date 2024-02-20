@@ -95,7 +95,7 @@ TEST_F(TestProcessManager, TestProcessManagerSingleEarlyStop) {
 }
 
 TEST_F(TestProcessManager, TestProcessManagerMultipleRun) {
-  const int nr_procs = 200;
+  const int nr_procs = 1000;
   auto pmf           = process::PROC_get_processmanager_factory();
   auto pm            = pmf->create_processmanager();
 
@@ -119,10 +119,11 @@ TEST_F(TestProcessManager, TestProcessManagerMultipleRun) {
           // std::cout << "GET_STATE INDEX " << index << std::endl;
           return states[index];
         }));
-    EXPECT_CALL(*process, kill());
-    EXPECT_CALL(*process, execute(_)).WillOnce(Invoke([&states, index](int id) {
-      std::cout << "EXEC INDEX " << index << " ID " << id << std::endl;
+    EXPECT_CALL(*process, kill()).WillOnce(Invoke([&states, index]() {
       states[index] = ProcessState::finished;
+    }));
+    EXPECT_CALL(*process, execute(_)).WillOnce(Invoke([&states, index](int id) {
+      states[index] = ProcessState::running;
     }));
     index++;
   }
@@ -139,7 +140,7 @@ TEST_F(TestProcessManager, TestProcessManagerMultipleRun) {
 
   // wait for processes to finish
   for (index = 0; index < nr_procs; index++) {
-    while (states[index] != ProcessState::finished)
+    while (states[index] != ProcessState::running)
       ;
   }
 
