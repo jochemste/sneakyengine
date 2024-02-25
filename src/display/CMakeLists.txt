@@ -3,6 +3,8 @@ set(LIBNAME display)
 set(DISPLAY_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR} CACHE INTERNAL "")
 set(DISPLAY_LIB ${LIBNAME} CACHE INTERNAL "")
 
+add_subdirectory(process_impl)
+
 set(SRCS
   display_sdl_impl.cpp
   display.cpp

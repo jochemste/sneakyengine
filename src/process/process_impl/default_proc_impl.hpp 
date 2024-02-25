@@ -1,7 +1,0 @@
-#include "process.hpp"
-
-#include <memory>
-
-class InitProcessFactory{
-public:
-};
