@@ -5,9 +5,12 @@ add_subdirectory(logging)
 set(INCLUDE_FOR_ALL ${LOGGING_INCLUDE})
 set(LINK_FOR_ALL ${LOGGING_LIB})
 
+# Follow order of dependencies
 add_subdirectory(utils)
-add_subdirectory(display)
 add_subdirectory(process)
+
+add_subdirectory(display)
+
 
 
 add_executable(${PROJECTNAME} ${SRCS})
