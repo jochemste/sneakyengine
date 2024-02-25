@@ -113,9 +113,15 @@ void Threadpool_impl::thread_run() {
       m_nr_running++;
       try {
         process->execute(id);
+
+      } catch (const ProcessException &e) {
+        Log(LogLevel::error)
+            << LOG_HEADER << "Process with id " << id
+            << " failed with a process exception: " << e.what();
       } catch (std::exception &e) {
-        Log(LogLevel::error) << LOG_HEADER << "Process with id " << id
-                             << " failed: " << e.what();
+        Log(LogLevel::error)
+            << LOG_HEADER << "Process with id " << id
+            << " failed with a generic exception: " << e.what();
       }
       m_nr_running--;
     } else {

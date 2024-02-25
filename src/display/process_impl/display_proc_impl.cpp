@@ -45,7 +45,7 @@ DisplayProcessImpl::DisplayProcessImpl(const ProcessOwner &owner,
 DisplayProcessImpl::~DisplayProcessImpl() { kill(); }
 
 void DisplayProcessImpl::execute(int id) {
-  Log(LogLevel::info) << LOG_HEADER << "Executing process" << id << ":"
+  Log(LogLevel::info) << LOG_HEADER << "Executing process " << id << ": "
                       << m_name;
   m_process_id = id;
   update_state(ProcessState::running);
@@ -73,9 +73,8 @@ void DisplayProcessImpl::kill() {
       m_display->stop();
     } catch (DisplayException &e) {
       update_state(ProcessState::failed);
-      std::string err_msg("Killing display has failed");
-      Log(LogLevel::error) << LOG_HEADER << err_msg << ": " << e.what();
-      throw ProcessException(err_msg);
+      Log(LogLevel::error) << LOG_HEADER << "Killing display has failed"
+                           << ": " << e.what();
     }
   }
 
