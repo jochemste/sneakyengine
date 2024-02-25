@@ -1,7 +1,7 @@
 set(LIBNAME scheduler)
 
-set(SCHEDULER_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR} CACHE INTERNAL "")
-set(SCHEDULER_LIB ${LIBNAME} CACHE INTERNAL "")
+set(SCHEDULER_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR} CACHE PATH "scheduler include directory")
+set(SCHEDULER_LIB ${LIBNAME} CACHE INTERNAL "scheduler libname for linking")
 
 set(SRCS
   scheduler.cpp

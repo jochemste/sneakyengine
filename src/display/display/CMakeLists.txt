@@ -1,7 +1,7 @@
 set(LIBNAME display)
 
-set(DISPLAY_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR} CACHE INTERNAL "")
-set(DISPLAY_LIB ${LIBNAME} CACHE INTERNAL "")
+set(DISPLAY_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR} CACHE PATH "display include directory")
+set(DISPLAY_LIB ${LIBNAME} CACHE INTERNAL "display library name for linking")
 
 set(SRCS
   display_sdl_impl.cpp

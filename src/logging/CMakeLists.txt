@@ -1,7 +1,7 @@
 set(LIBNAME logger)
 
-set(LOGGING_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR} CACHE INTERNAL "")
-set(LOGGING_LIB ${LIBNAME} CACHE INTERNAL "")
+set(LOGGING_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR} CACHE PATH "logging include directory")
+set(LOGGING_LIB ${LIBNAME} CACHE INTERNAL "logging libname for linking")
 
 set(SRCS
   logging.cpp
