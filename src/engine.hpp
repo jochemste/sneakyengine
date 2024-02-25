@@ -1,9 +1,9 @@
 #ifndef ENGINE_H
 #define ENGINE_H
 
-#include <memory>
+#include "process.hpp"
 
-#include "display.hpp"
+#include <memory>
 
 enum class EngineState { RUNNING, PAUSED, STOPPED, NOT_RUNNING };
 
@@ -18,7 +18,7 @@ public:
 
 private:
   EngineState m_engine_state = EngineState::NOT_RUNNING;
-  std::unique_ptr<IDisplay> m_display;
+  std::unique_ptr<process::IProcessManager> m_procman;
 };
 
 #endif

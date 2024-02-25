@@ -1,39 +1,53 @@
 #include "engine.hpp"
 
-#include "display.hpp"
+#include "display_proc_impl.hpp"
 #include "logging.hpp"
 #include "process.hpp"
 
-Engine::Engine() : m_engine_state(EngineState::NOT_RUNNING) {}
+Engine::Engine() : m_engine_state(EngineState::NOT_RUNNING) {
+  Log(LogLevel::debug) << LOG_START;
+  auto procman_fact = process::PROC_get_processmanager_factory();
+  m_procman         = procman_fact->create_processmanager();
+  Log(LogLevel::debug) << LOG_END;
+}
 
 Engine::~Engine() {
-  if (this->m_engine_state == EngineState::RUNNING) {
+  Log(LogLevel::debug) << LOG_START;
+  if (m_engine_state != EngineState::STOPPED) {
     stop();
   }
+  Log(LogLevel::debug) << LOG_END;
 }
 
 int Engine::run() {
-  if (PROC_init() != 0) {
-    Log(LogLevel::critical) << LOG_HEADER << "Failed to initialise";
-    return -1;
+  Log(LogLevel::debug) << LOG_START;
+  try {
+    m_procman->start();
+
+    m_procman->provide(
+        *DisplayProcessFactory()
+             .createProcess(ProcessOwner::process_manager, "main_display")
+             .release());
+
+    Log(LogLevel::info) << LOG_HEADER << "Engine is running";
+  } catch (const ProcessException &exc) {
+    Log(LogLevel::critical)
+        << LOG_HEADER << "Fatal exception occurred: " << exc.what();
+  } catch (...) {
+    Log(LogLevel::critical)
+        << LOG_HEADER << "Fatal unknown exception occurred ";
   }
 
-  Log(LogLevel::info) << LOG_HEADER << "Engine is running";
-  m_display = DIS_get_display_instance();
-  m_display->start();
-
-  int test_loops = 60;
-  for (int i = 0; i < test_loops; i++) {
-    m_display->refresh();
-  }
-
+  Log(LogLevel::debug) << LOG_END;
   return 0;
 }
 
 int Engine::stop() {
-  this->m_engine_state = EngineState::STOPPED;
-  m_display->stop();
-  PROC_quit();
+  Log(LogLevel::debug) << LOG_START;
+  m_procman->stop();
+  m_engine_state = EngineState::STOPPED;
+
   Log(LogLevel::info) << LOG_HEADER << "Engine stopped";
+  Log(LogLevel::debug) << LOG_END;
   return 0;
 }

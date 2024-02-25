@@ -20,6 +20,7 @@ target_link_libraries(${PROJECTNAME}
   ${LINK_FOR_ALL}
   ${DISPLAY_LIB}
   ${PROCESS_LIB}
+  ${DISPLAY_PROC_LIB}
   )
 target_include_directories(
   ${PROJECTNAME}
@@ -27,5 +28,6 @@ target_include_directories(
   ${INCLUDE_FOR_ALL}
   ${DISPLAY_INCLUDE}
   ${PROCESS_INCLUDE}
+  ${DISPLAY_PROC_INCLUDE}
   )
 
