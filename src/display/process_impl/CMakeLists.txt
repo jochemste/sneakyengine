@@ -1,7 +1,8 @@
-set(LIBNAME process_impl)
+set(LIBNAME display_process)
 
-set(PROCESS_IMPL_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR} CACHE INTERNAL "")
-set(PROCESS_IMPL_LIB ${LIBNAME} CACHE INTERNAL "")
+set(DISPLAY_PROC_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR} CACHE PATH
+  "display process include directory")
+set(DISPLAY_PROC_LIB ${LIBNAME} CACHE INTERNAL "display process libname for linking")
 
 set(SRCS
   display_proc_impl.cpp

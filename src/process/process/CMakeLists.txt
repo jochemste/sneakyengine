@@ -1,8 +1,8 @@
 set(LIBNAME process)
 
 # set externally used variables for header inclusion and lib linking
-set(PROCESS_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR} CACHE INTERNAL "")
-set(PROCESS_LIB ${LIBNAME} CACHE INTERNAL "")
+set(PROCESS_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR} CACHE PATH "process include directory")
+set(PROCESS_LIB ${LIBNAME} CACHE INTERNAL "process library name for linking")
 
 # set source files
 set(SRCS
