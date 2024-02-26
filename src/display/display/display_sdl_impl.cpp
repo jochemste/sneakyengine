@@ -55,9 +55,9 @@ void DisplaySDLImpl::refresh() {
 
 // PRIVATE
 void DisplaySDLImpl::wait_FPS() {
-  auto current_tick = SDL_GetTicks();
+  Uint64 current_tick = SDL_GetTicks();
   if (current_tick < m_next_frame_tick_nr) {
-    SDL_Delay(m_next_frame_tick_nr - current_tick);
+    SDL_Delay(static_cast<Uint32>(m_next_frame_tick_nr - current_tick));
   }
   m_next_frame_tick_nr += m_tick_interval;
 }
