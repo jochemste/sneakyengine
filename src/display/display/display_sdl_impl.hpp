@@ -18,7 +18,7 @@ private:
   SDL_Window *m_window;
   SDL_Surface *m_surface;
 
-  const Uint32 m_tick_interval;
+  const Uint64 m_tick_interval;
 
-  Uint32 m_next_frame_tick_nr;
+  Uint64 m_next_frame_tick_nr;
 };
