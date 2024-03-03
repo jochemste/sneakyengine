@@ -40,11 +40,19 @@ DisplayProcessImpl::DisplayProcessImpl(const ProcessOwner &owner,
                                        const std::string &name)
     : m_owner(owner), m_process_id(-1), m_name(name),
       m_state(ProcessState::not_running),
-      m_display(DIS_get_display_instance()) {}
+      m_display(DIS_get_display_instance()) {
+  Log(LogLevel::debug) << LOG_START;
+  Log(LogLevel::debug) << LOG_END;
+}
 
-DisplayProcessImpl::~DisplayProcessImpl() { kill(); }
+DisplayProcessImpl::~DisplayProcessImpl() {
+  Log(LogLevel::debug) << LOG_START;
+  kill();
+  Log(LogLevel::debug) << LOG_END;
+}
 
 void DisplayProcessImpl::execute(int id) {
+  Log(LogLevel::debug) << LOG_START;
   Log(LogLevel::info) << LOG_HEADER << "Executing process " << id << ": "
                       << m_name;
   m_process_id = id;
@@ -63,9 +71,11 @@ void DisplayProcessImpl::execute(int id) {
     Log(LogLevel::critical) << LOG_HEADER << err_msg << ": " << e.what();
     throw ProcessException(err_msg);
   }
+  Log(LogLevel::debug) << LOG_END;
 }
 
 void DisplayProcessImpl::kill() {
+  Log(LogLevel::debug) << LOG_START;
   if (get_state() == ProcessState::running) {
     update_state(ProcessState::stopping);
 
@@ -82,18 +92,31 @@ void DisplayProcessImpl::kill() {
     update_state(ProcessState::finished);
   }
   m_process_id = -1;
+  Log(LogLevel::debug) << LOG_END;
 }
 
 ProcessState DisplayProcessImpl::get_state() {
+  Log(LogLevel::debug) << LOG_START;
   const std::lock_guard<std::mutex> lock(m_state_mutex);
+  Log(LogLevel::debug) << LOG_END;
   return m_state;
 }
 
-ProcessOwner DisplayProcessImpl::get_owner() { return m_owner; }
+ProcessOwner DisplayProcessImpl::get_owner() {
+  Log(LogLevel::debug) << LOG_START;
+  Log(LogLevel::debug) << LOG_END;
+  return m_owner;
+}
 
-void DisplayProcessImpl::get_name(std::string &name) { name = m_name; }
+void DisplayProcessImpl::get_name(std::string &name) {
+  Log(LogLevel::debug) << LOG_START;
+  name = m_name;
+  Log(LogLevel::debug) << LOG_END;
+}
 
 void DisplayProcessImpl::update_state(const ProcessState &state) {
+  Log(LogLevel::debug) << LOG_START;
   const std::lock_guard<std::mutex> lock(m_state_mutex);
   m_state = state;
+  Log(LogLevel::debug) << LOG_END;
 }
