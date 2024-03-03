@@ -2,6 +2,9 @@
 
 #include "SDL3/SDL.h"
 
+/// State of DisplaySDLImpl, for internal use
+enum class DisplayState { not_running, running, stopping, finished, failed };
+
 class DisplaySDLImpl : public IDisplay {
 public:
   DisplaySDLImpl();
@@ -17,6 +20,8 @@ private:
 
   SDL_Window *m_window;
   SDL_Surface *m_surface;
+
+  DisplayState m_state;
 
   const Uint64 m_tick_interval;
 
