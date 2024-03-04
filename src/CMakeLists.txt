@@ -10,7 +10,7 @@ add_subdirectory(utils)
 add_subdirectory(process)
 
 add_subdirectory(display)
-
+add_subdirectory(input)
 
 
 add_executable(${PROJECTNAME} ${SRCS})
