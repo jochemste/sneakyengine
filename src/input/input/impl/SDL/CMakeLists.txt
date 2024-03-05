@@ -19,7 +19,7 @@ target_link_libraries(${LIBNAME}
   )
 target_include_directories(
   ${LIBNAME}
-  PUBLIC
+  PRIVATE
   ${INCLUDE_FOR_ALL}
   ${INPUTPOLLERSDL_INCLUDE}
   ${INPUT_INCLUDE}

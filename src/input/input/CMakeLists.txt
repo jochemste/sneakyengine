@@ -25,5 +25,6 @@ target_include_directories(
   PRIVATE
   ${INCLUDE_FOR_ALL}
   ${UTILS_INCLUDE}
+  ${INPUT_INCLUDE}
   ${INPUTPOLLERSDL_INCLUDE}
   )
