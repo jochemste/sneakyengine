@@ -1,5 +1,5 @@
 
-#add_subdirectory(event)
+add_subdirectory(event)
 
 add_subdirectory(input)
 
