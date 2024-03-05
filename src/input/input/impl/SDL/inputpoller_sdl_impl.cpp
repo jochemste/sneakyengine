@@ -8,7 +8,15 @@ void InputPollerSDLImpl::poll(input::InputEvent &event) {
   Log(LogLevel::debug) << LOG_START;
 
   SDL_Event sdl_event;
-  SDL_PollEvent(&sdl_event);
+
+  // Check for event, return if none
+  if (SDL_PollEvent(&sdl_event) == 0) {
+    event = input::InputEvent::no_event;
+    Log(LogLevel::debug) << LOG_END << " - No event";
+    return;
+  }
+
+  // Check event type
   switch (sdl_event.type) {
   case SDL_EVENT_QUIT:
     event = input::InputEvent::quit;
