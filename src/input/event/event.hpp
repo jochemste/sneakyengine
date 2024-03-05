@@ -5,6 +5,7 @@
 
 namespace event {
 
+/// Eventhandler interface class
 class IEventHandler {
 public:
   /// @brief Start the event handler
@@ -14,8 +15,10 @@ public:
   virtual void stop() = 0;
 };
 
+/// Factory class to create eventhandlers
 class EventHandlerFactory {
 public:
+  /// @brief Create a default IEventHandler implementation
   std::unique_ptr<IEventHandler> create();
 };
 
