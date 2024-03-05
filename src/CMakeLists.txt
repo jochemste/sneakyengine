@@ -10,7 +10,7 @@ add_subdirectory(utils)
 add_subdirectory(process)
 
 add_subdirectory(display)
-
+add_subdirectory(input)
 
 
 add_executable(${PROJECTNAME} ${SRCS})
@@ -21,6 +21,7 @@ target_link_libraries(${PROJECTNAME}
   ${DISPLAY_LIB}
   ${PROCESS_LIB}
   ${DISPLAY_PROC_LIB}
+  ${EVENT_LIB}
   )
 target_include_directories(
   ${PROJECTNAME}
@@ -29,5 +30,6 @@ target_include_directories(
   ${DISPLAY_INCLUDE}
   ${PROCESS_INCLUDE}
   ${DISPLAY_PROC_INCLUDE}
+  ${EVENT_INCLUDE}
   )
 
