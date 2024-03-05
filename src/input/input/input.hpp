@@ -8,10 +8,12 @@ namespace input {
 enum class InputEvent { quit };
 
 class IInputPoller {
+public:
   virtual void poll(InputEvent &event) = 0;
 };
 
 class InputPollerFactory {
+public:
   std::unique_ptr<IInputPoller> create();
 };
 
