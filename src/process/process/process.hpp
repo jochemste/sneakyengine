@@ -4,13 +4,6 @@
 #include <memory>
 #include <string>
 
-/// Temporary C style function. Will be replaced by class
-/// @return 0 when success, -1 when fail
-int PROC_init();
-
-/// Temporary C style function. Will be replaced by class
-void PROC_quit();
-
 /// State of IProcess
 enum class ProcessState {
   /// Process is not running and was not started
