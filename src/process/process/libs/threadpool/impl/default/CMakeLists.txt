@@ -1,10 +1,9 @@
-set(LIBNAME threadpool)
+set(LIBNAME threadpool_default)
 
-set(THREADPOOL_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR} CACHE PATH "threadpool include path")
-set(THREADPOOL_LIB ${LIBNAME} CACHE INTERNAL "threadpool libname for linking")
+set(THREADPOOL_IMPL_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR} CACHE PATH "threadpool include path")
+set(THREADPOOL_IMPL_LIB ${LIBNAME} CACHE INTERNAL "threadpool libname for linking")
 
 set(SRCS
-  threadpool.cpp
   threadpool_impl.cpp
   )
 

@@ -24,6 +24,8 @@ void InputPollerSDLImpl::poll(input::InputEvent &event) {
   default:
     Log(LogLevel::warning) << LOG_HEADER
                            << "Unknown event type: " << sdl_event.type;
+    event = input::InputEvent::unknown;
+    break;
   };
 
   Log(LogLevel::debug) << LOG_END;

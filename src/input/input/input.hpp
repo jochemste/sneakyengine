@@ -6,7 +6,7 @@
 namespace input {
 
 /// Events returned by IInputPoller
-enum class InputEvent { no_event, quit };
+enum class InputEvent { unknown, no_event, quit };
 
 /// Input polling class, to read user input
 class IInputPoller {

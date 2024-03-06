@@ -7,15 +7,22 @@ set(SRCS
   logging.cpp
   )
 
+add_subdirectory(impl)
+
 add_library(
   ${LIBNAME}
   ${SRCS}
   )
 
-target_link_libraries(${LIBNAME} PRIVATE SDL3::SDL3)
+target_link_libraries(
+  ${LIBNAME}
+  PRIVATE
+  ${LOGGING_IMPL_LIB}
+  )
 
 target_include_directories(
   ${LIBNAME}
   PUBLIC
-  logger.hpp
+  ${LOGGING_IMPL_INCLUDE}
+  ${LOGGING_INCLUDE}
   )
