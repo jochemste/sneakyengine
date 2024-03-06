@@ -5,8 +5,9 @@ set(THREADPOOL_LIB ${LIBNAME} CACHE INTERNAL "threadpool libname for linking")
 
 set(SRCS
   threadpool.cpp
-  threadpool_impl.cpp
   )
+
+add_subdirectory(impl)
 
 add_library(
   ${LIBNAME}
@@ -16,6 +17,7 @@ add_library(
 target_link_libraries(${LIBNAME}
   PRIVATE
   ${LINK_FOR_ALL}
+  ${THREADPOOL_IMPL_LIB}
   )
 
 target_include_directories(
@@ -24,4 +26,5 @@ target_include_directories(
   ${INCLUDE_FOR_ALL}
   ${THREADPOOL_INCLUDE}
   ${PROCESS_INCLUDE}
+  ${THREADPOOL_IMPL_INCLUDE}
   )

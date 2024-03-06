@@ -21,6 +21,7 @@ target_link_libraries(
   ${LOGGING_LIB}
   ${SCHEDULER_LIB}
   ${PROCESS_LIB}
+  ${THREADPOOL_IMPL_LIB}
   ${THREADPOOL_LIB}
   )
 
@@ -31,6 +32,7 @@ target_include_directories(
   ${LOGGING_INCLUDE}
   ${SCHEDULER_INCLUDE}
   ${PROCESS_INCLUDE}
+  ${THREADPOOL_IMPL_INCLUDE}
   ${THREADPOOL_INCLUDE}
   )
 
