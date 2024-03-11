@@ -1,3 +1,7 @@
 #include "scheduler.hpp"
 
-namespace scheduler {} // namespace scheduler
+namespace process {
+    namespace scheduler {
+        
+    } // namespace scheduler
+}

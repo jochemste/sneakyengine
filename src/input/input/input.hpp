@@ -5,20 +5,20 @@
 
 namespace input {
 
-/// Events returned by IInputPoller
-enum class InputEvent { unknown, no_event, quit };
+  /// Events returned by IInputPoller
+  enum class InputEvent { unknown, no_event, quit };
 
-/// Input polling class, to read user input
-class IInputPoller {
-public:
-  virtual void poll(InputEvent &event) = 0;
-};
+  /// Input polling class, to read user input
+  class IInputPoller {
+  public:
+    virtual void poll(InputEvent &event) = 0;
+  };
 
-/// Factory class to create inputpollers
-class InputPollerFactory {
-public:
-  std::unique_ptr<IInputPoller> create();
-};
+  /// Factory class to create inputpollers
+  class InputPollerFactory {
+  public:
+    std::unique_ptr<IInputPoller> create();
+  };
 
 } // namespace input
 #endif // INPUT_HPP

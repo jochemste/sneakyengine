@@ -11,7 +11,7 @@ ProcessException::ProcessException(const std::string &message)
 const char *ProcessException::what() const noexcept { return m_message; }
 
 namespace process {
-std::unique_ptr<IProcessManagerFactory> PROC_get_processmanager_factory() {
-  return std::make_unique<ProcessManagerFactoryImpl>();
-}
+  std::unique_ptr<IProcessManagerFactory> PROC_get_processmanager_factory() {
+    return std::make_unique<ProcessManagerFactoryImpl>();
+  }
 } // namespace process
