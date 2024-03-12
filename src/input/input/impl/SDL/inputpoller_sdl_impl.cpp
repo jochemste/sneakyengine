@@ -6,14 +6,14 @@
 
 namespace input {
   void InputPollerSDLImpl::poll(input::InputEvent &event) {
-    Log(LogLevel::debug) << LOG_START;
+    logging::Log(logging::LogLevel::debug) << logging::LOG_START;
 
     SDL_Event sdl_event;
 
     // Check for event, return if none
     if (SDL_PollEvent(&sdl_event) == 0) {
       event = input::InputEvent::no_event;
-      Log(LogLevel::debug) << LOG_END << " - No event";
+      logging::Log(logging::LogLevel::debug) << logging::LOG_END << " - No event";
       return;
     }
 
@@ -23,12 +23,12 @@ namespace input {
       event = input::InputEvent::quit;
       break;
     default:
-      Log(LogLevel::warning) << LOG_HEADER
+      logging::Log(logging::LogLevel::warning) << logging::LOG_HEADER
                             << "Unknown event type: " << sdl_event.type;
       event = input::InputEvent::unknown;
       break;
     };
 
-    Log(LogLevel::debug) << LOG_END;
+    logging::Log(logging::LogLevel::debug) << logging::LOG_END;
   }
 }

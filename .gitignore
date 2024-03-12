@@ -48,3 +48,7 @@ bin/test_engine
 **GRTAGS**
 **GPATH**
 /bin/
+
+# Vscode files
+.vscode/
+.vscode/settings.json

@@ -45,29 +45,29 @@ namespace process {
       ~FIFOScheduler() {}
 
       virtual T *get_next() override {
-        Log(LogLevel::debug) << LOG_START;
+        logging::Log(logging::LogLevel::debug) << logging::LOG_START;
         const std::lock_guard<std::mutex> lock(m_queue_mut);
         auto el = m_queue.front();
         m_queue.pop();
-        Log(LogLevel::debug) << LOG_END;
+        logging::Log(logging::LogLevel::debug) << logging::LOG_END;
         return el;
       }
       virtual int schedule(T &process) override {
-        Log(LogLevel::debug) << LOG_START;
-        Log(LogLevel::debug) << LOG_END;
+        logging::Log(logging::LogLevel::debug) << logging::LOG_START;
+        logging::Log(logging::LogLevel::debug) << logging::LOG_END;
         return this->schedule(process, 0);
       }
 
       virtual int schedule(T &process, int /*priority*/) override {
-        Log(LogLevel::debug) << LOG_START;
+        logging::Log(logging::LogLevel::debug) << logging::LOG_START;
         const std::lock_guard<std::mutex> lock(m_queue_mut);
         m_queue.push(&process);
-        Log(LogLevel::debug) << LOG_END;
+        logging::Log(LogLevel::debug) << logging::LOG_END;
         return 0;
       }
       virtual size_t nr_processes() override {
-        Log(LogLevel::debug) << LOG_START;
-        Log(LogLevel::debug) << LOG_END;
+        logging::Log(logging::LogLevel::debug) << logging::LOG_START;
+        logging::Log(logging::LogLevel::debug) << logging::LOG_END;
         return m_queue.size();
       }
 

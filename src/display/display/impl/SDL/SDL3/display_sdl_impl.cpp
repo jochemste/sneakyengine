@@ -16,16 +16,16 @@ namespace display {
   DisplaySDLImpl::DisplaySDLImpl()
       : m_window(nullptr), m_surface(nullptr), m_state(DisplayState::not_running),
         m_tick_interval(utils::time::nsecond / g_window_fps) {
-    Log(LogLevel::debug) << LOG_START;
-    Log(LogLevel::debug) << LOG_END;
+    logging::Log(logging::LogLevel::debug) << logging::LOG_START;
+    logging::Log(logging::LogLevel::debug) << logging::LOG_END;
   }
   DisplaySDLImpl::~DisplaySDLImpl() {
-    Log(LogLevel::debug) << LOG_START;
-    Log(LogLevel::debug) << LOG_END;
+    logging::Log(logging::LogLevel::debug) << logging::LOG_START;
+    logging::Log(logging::LogLevel::debug) << logging::LOG_END;
   }
 
   void DisplaySDLImpl::start() {
-    Log(LogLevel::debug) << LOG_START << " - Starting display";
+    logging::Log(logging::LogLevel::debug) << logging::LOG_START << " - Starting display";
 
     m_window = SDL_CreateWindow(g_window_name, g_window_width, g_window_height,
                                 g_window_flags);
@@ -35,8 +35,8 @@ namespace display {
     if (m_window == nullptr) {
       m_state = DisplayState::failed;
       const std::string err_msg("Failed to create a window");
-      Log(LogLevel::critical) << LOG_HEADER << err_msg
-                              << "(SDL): " << SDL_GetError() << " - " << LOG_END;
+      logging::Log(logging::LogLevel::critical) << logging::LOG_HEADER << err_msg
+                              << "(SDL): " << SDL_GetError() << " - " << logging::LOG_END;
       SDL_ClearError();
       throw DisplayException(err_msg);
     } else {
@@ -46,19 +46,19 @@ namespace display {
     if (m_surface == nullptr) {
       m_state = DisplayState::failed;
       const std::string err_msg("Failed to get surface from window");
-      Log(LogLevel::critical) << LOG_HEADER << err_msg
-                              << "(SDL): " << SDL_GetError() << " - " << LOG_END;
+      logging::Log(logging::LogLevel::critical) << logging::LOG_HEADER << err_msg
+                              << "(SDL): " << SDL_GetError() << " - " << logging::LOG_END;
       SDL_ClearError();
       throw DisplayException(err_msg);
     }
 
     m_next_frame_tick_nr = SDL_GetTicks() + m_tick_interval;
 
-    Log(LogLevel::debug) << LOG_END;
+    logging::Log(logging::LogLevel::debug) << logging::LOG_END;
   }
 
   void DisplaySDLImpl::stop() {
-    Log(LogLevel::debug) << LOG_START << " - Stopping display";
+    logging::Log(logging::LogLevel::debug) << logging::LOG_START << " - Stopping display";
 
     // Try to destroy window surface and throw an error if failed, while m_state
     // is running
@@ -66,7 +66,7 @@ namespace display {
         (m_state == DisplayState::running)) {
       const std::string err_msg("Failed to destroy window surface, state=" +
                                 display_state_to_str(m_state));
-      Log(LogLevel::error) << LOG_HEADER << err_msg << " - " << LOG_END;
+      logging::Log(logging::LogLevel::error) << logging::LOG_HEADER << err_msg << " - " << logging::LOG_END;
       throw DisplayException(err_msg);
     }
     m_state = DisplayState::stopping;
@@ -75,19 +75,19 @@ namespace display {
     SDL_DestroyWindow(m_window);
     m_state = DisplayState::finished;
 
-    Log(LogLevel::debug) << LOG_END << " - Stopped display";
+    logging::Log(logging::LogLevel::debug) << logging::LOG_END << " - Stopped display";
   }
 
   void DisplaySDLImpl::refresh() {
-    Log(LogLevel::debug) << LOG_START;
+    logging::Log(logging::LogLevel::debug) << logging::LOG_START;
     SDL_UpdateWindowSurface(m_window);
     this->wait_FPS();
-    Log(LogLevel::debug) << LOG_END;
+    logging::Log(logging::LogLevel::debug) << logging::LOG_END;
   }
 
   // PRIVATE
   void DisplaySDLImpl::wait_FPS() {
-    Log(LogLevel::debug) << LOG_START;
+    logging::Log(logging::LogLevel::debug) << logging::LOG_START;
 
     Uint64 current_tick = SDL_GetTicks();
     if (current_tick < m_next_frame_tick_nr) {
@@ -95,7 +95,7 @@ namespace display {
     }
     m_next_frame_tick_nr += m_tick_interval;
 
-    Log(LogLevel::debug) << LOG_END;
+    logging::Log(logging::LogLevel::debug) << logging::LOG_END;
   }
 
   static const std::string display_state_to_str(DisplayState state) {
