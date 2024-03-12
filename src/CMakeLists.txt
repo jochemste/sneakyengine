@@ -18,18 +18,16 @@ add_executable(${PROJECTNAME} ${SRCS})
 target_link_libraries(${PROJECTNAME}
   PRIVATE
   ${LINK_FOR_ALL}
-  ${DISPLAY_LIB}
   ${PROCESS_LIB}
   ${DISPLAY_PROC_LIB}
-  ${EVENT_LIB}
+  ${EVENT_PROC_LIB}
   )
 target_include_directories(
   ${PROJECTNAME}
   PRIVATE
   ${INCLUDE_FOR_ALL}
-  ${DISPLAY_INCLUDE}
   ${PROCESS_INCLUDE}
   ${DISPLAY_PROC_INCLUDE}
-  ${EVENT_INCLUDE}
+  ${EVENT_PROC_INCLUDE}
   )
 

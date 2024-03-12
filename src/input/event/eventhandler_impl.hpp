@@ -1,3 +1,6 @@
+#ifndef EVENTHANDLER_IMPL_HPP
+#define EVENTHANDLER_IMPL_HPP
+
 #include "event.hpp"
 
 #include "input.hpp"
@@ -12,3 +15,5 @@ private:
   std::unique_ptr<input::IInputPoller> m_inputpoller;
   bool m_stop;
 };
+
+#endif // EVENTHANDLER_IMPL_HPP

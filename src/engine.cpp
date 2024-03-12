@@ -1,9 +1,10 @@
 #include "engine.hpp"
 
-#include "display_proc_impl.hpp"
-#include "event.hpp"
 #include "logging.hpp"
 #include "process.hpp"
+
+#include "display_proc_impl.hpp"
+#include "event_proc.hpp"
 
 Engine::Engine() : m_engine_state(EngineState::NOT_RUNNING) {
   Log(LogLevel::debug) << LOG_START;
@@ -23,18 +24,20 @@ Engine::~Engine() {
 int Engine::run() {
   Log(LogLevel::debug) << LOG_START;
 
-  auto eventhandler = event::EventHandlerFactory().create();
-
   try {
     m_procman->start();
 
+    // Add the main processes
+    m_procman->provide(
+        *EventHandlerProcessFactory()
+             .createProcess(ProcessOwner::process_manager, "main_eventhandler")
+             .release());
     m_procman->provide(
         *DisplayProcessFactory()
              .createProcess(ProcessOwner::process_manager, "main_display")
              .release());
 
     Log(LogLevel::info) << LOG_HEADER << "Engine is running";
-    eventhandler->start();
   } catch (const ProcessException &exc) {
     Log(LogLevel::critical)
         << LOG_HEADER << "Fatal exception occurred: " << exc.what();
