@@ -12,7 +12,8 @@ Threadpool_impl::Threadpool_impl()
 Threadpool_impl::Threadpool_impl(int nr_threads)
     : m_nr_threads(nr_threads), m_nr_running(0), m_should_stop(false) {
   Log(LogLevel::debug) << LOG_START;
-
+  Log(LogLevel::debug) << LOG_HEADER << "Starting with " << m_nr_threads
+                       << " threads";
   Log(LogLevel::debug) << LOG_END;
 }
 
