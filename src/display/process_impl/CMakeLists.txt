@@ -16,7 +16,6 @@ add_library(
 target_link_libraries(${LIBNAME}
   PRIVATE
   ${LINK_FOR_ALL}
-  ${PROCESS_LIB}
   ${DISPLAY_LIB}
   )
 target_include_directories(
