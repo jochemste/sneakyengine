@@ -3,7 +3,11 @@
 
 #include <memory>
 
-std::unique_ptr<process::IProcessManager>
-ProcessManagerFactoryImpl::create_processmanager() {
-  return std::make_unique<process_internal::ProcessManagerImpl>();
+namespace process {
+  namespace default {
+    std::unique_ptr<process::IProcessManager>
+    ProcessManagerFactoryImpl::create_processmanager() {
+      return std::make_unique<process_internal::ProcessManagerImpl>();
+    }
+  }
 }
