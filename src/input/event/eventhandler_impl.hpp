@@ -1,3 +1,6 @@
+#ifndef EVENTHANDLER_IMPL_HPP
+#define EVENTHANDLER_IMPL_HPP
+
 #include "event.hpp"
 
 #include "input.hpp"
@@ -15,3 +18,5 @@ namespace input {
     };
   }
 }
+
+#endif // EVENTHANDLER_IMPL_HPP
