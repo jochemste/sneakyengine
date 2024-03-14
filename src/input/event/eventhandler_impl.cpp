@@ -12,6 +12,6 @@ namespace input {
       }
     }
 
-    void EventHandlerImpl::stop() {}
+    void EventHandlerImpl::stop() { m_stop = true; }
   }
 }
