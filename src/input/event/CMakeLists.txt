@@ -15,7 +15,6 @@ add_library(
 
 target_link_libraries(${LIBNAME}
   PRIVATE
-  SDL3::SDL3
   ${LINK_FOR_ALL}
   ${INPUT_LIB}
   )

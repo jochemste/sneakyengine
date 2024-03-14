@@ -1,58 +1,61 @@
 #include "engine.hpp"
 
-#include "display_proc_impl.hpp"
-#include "event.hpp"
 #include "logging.hpp"
 #include "process.hpp"
 
+#include "display_proc_impl.hpp"
+#include "event_proc.hpp"
+
 Engine::Engine() : m_engine_state(EngineState::NOT_RUNNING) {
-  logging::Log(logging::LogLevel::debug) << logging::LOG_START;
+  Log(LogLevel::debug) << LOG_START;
   auto procman_fact = process::PROC_get_processmanager_factory();
   m_procman         = procman_fact->create_processmanager();
-  logging::Log(logging::LogLevel::debug) << logging::LOG_END;
+  Log(LogLevel::debug) << LOG_END;
 }
 
 Engine::~Engine() {
-  logging::Log(logging::LogLevel::debug) << logging::LOG_START;
+  Log(LogLevel::debug) << LOG_START;
   if (m_engine_state != EngineState::STOPPED) {
     stop();
   }
-  logging::Log(logging::LogLevel::debug) << logging::LOG_END;
+  Log(LogLevel::debug) << LOG_END;
 }
 
 int Engine::run() {
-  logging::Log(logging::LogLevel::debug) << logging::LOG_START;
-
-  auto eventhandler = input::event::EventHandlerFactory().create();
+  Log(LogLevel::debug) << LOG_START;
 
   try {
     m_procman->start();
 
+    // Add the main processes
     m_procman->provide(
-        *display::displayProcess::DisplayProcessFactory()
-             .createProcess(process::ProcessOwner::process_manager, "main_display")
+        *EventHandlerProcessFactory()
+             .createProcess(ProcessOwner::process_manager, "main_eventhandler")
+             .release());
+    m_procman->provide(
+        *DisplayProcessFactory()
+             .createProcess(ProcessOwner::process_manager, "main_display")
              .release());
 
-    logging::Log(logging::LogLevel::info) << logging::LOG_HEADER << "Engine is running";
-    eventhandler->start();
-  } catch (const process::ProcessException &exc) {
-    logging::Log(logging::LogLevel::critical)
-        << logging::LOG_HEADER << "Fatal exception occurred: " << exc.what();
+    Log(LogLevel::info) << LOG_HEADER << "Engine is running";
+  } catch (const ProcessException &exc) {
+    Log(LogLevel::critical)
+        << LOG_HEADER << "Fatal exception occurred: " << exc.what();
   } catch (...) {
-    logging::Log(logging::LogLevel::critical)
-        << logging::LOG_HEADER << "Fatal unknown exception occurred ";
+    Log(LogLevel::critical)
+        << LOG_HEADER << "Fatal unknown exception occurred ";
   }
 
-  logging::Log(logging::LogLevel::debug) << logging::LOG_END;
+  Log(LogLevel::debug) << LOG_END;
   return 0;
 }
 
 int Engine::stop() {
-  logging::Log(logging::LogLevel::debug) << logging::LOG_START;
+  Log(LogLevel::debug) << LOG_START;
   m_procman->stop();
   m_engine_state = EngineState::STOPPED;
 
-  logging::Log(logging::LogLevel::info) << logging::LOG_HEADER << "Engine stopped";
-  logging::Log(logging::LogLevel::debug) << logging::LOG_END;
+  Log(LogLevel::info) << LOG_HEADER << "Engine stopped";
+  Log(LogLevel::debug) << LOG_END;
   return 0;
 }
