@@ -9,7 +9,7 @@ namespace input {
       EventHandlerProcessFactory(){};
 
       std::unique_ptr<process::IProcess> createProcess(const process::ProcessOwner &owner,
-                                              const std::string &name);
+                                                       const std::string &name);
     };
   }
 }
