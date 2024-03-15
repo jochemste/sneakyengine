@@ -33,6 +33,5 @@ class LogSDLImpl : public ILogInstance {
 
     static bool m_is_initialised;
   };
+  bool LogSDLImpl::m_is_initialised = false;
 }
-
-bool LogSDLImpl::m_is_initialised = false;

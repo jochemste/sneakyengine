@@ -14,7 +14,7 @@ namespace process {
     /// @todo  To be replaced by configurable settings
     constexpr int MAX_THREADS = 1;
 
-    class ProcessManagerImpl : public process::IProcessManager {
+    class ProcessManagerImpl : public IProcessManager {
     public:
       ProcessManagerImpl();
       ~ProcessManagerImpl();

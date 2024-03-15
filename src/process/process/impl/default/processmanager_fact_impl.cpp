@@ -5,7 +5,7 @@
 
 namespace process {
 
-  std::unique_ptr<process::IProcessManager>
+  std::unique_ptr<IProcessManager>
   ProcessManagerFactoryImpl::create_processmanager() {
     return std::make_unique<process_internal::ProcessManagerImpl>();
   }

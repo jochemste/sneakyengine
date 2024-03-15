@@ -4,9 +4,9 @@
 
 namespace process {
   /// @brief Process manager factory implementation
-  class ProcessManagerFactoryImpl : public process::IProcessManagerFactory {
+  class ProcessManagerFactoryImpl : public IProcessManagerFactory {
   public:
-    virtual std::unique_ptr<process::IProcessManager>
+    virtual std::unique_ptr<IProcessManager>
     create_processmanager() override;
   };
 }
