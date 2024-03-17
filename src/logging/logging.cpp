@@ -4,7 +4,7 @@
 #include <filesystem>
 
 #if DEBUG
-#warning This is a debug build. Logging will be verbose
+#pragma warning(This is a debug build.Logging will be verbose)
 LogLevel Log::m_loglevel_app = LogLevel::debug;
 #else
 LogLevel Log::m_loglevel_app = LogLevel::warning;
