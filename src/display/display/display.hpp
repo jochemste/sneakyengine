@@ -2,6 +2,7 @@
 #define DISPLAY_HPP
 
 #include <memory>
+#include <string>
 
 /// Interface to display
 class IDisplay {
@@ -22,6 +23,9 @@ std::unique_ptr<IDisplay> DIS_get_display_instance();
 /// @brief General display exception class
 class DisplayException : public std::exception {
 public:
+  DisplayException()                              = delete;
+  DisplayException(const DisplayException &other) = delete;
+
   DisplayException(const char *message);
   DisplayException(const std::string &message);
   const char *what();
