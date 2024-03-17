@@ -204,4 +204,11 @@ TEST_F(TestProcessManager, TestProcessManagerMultipleRunProcFinished) {
 
   // stop procman
   pm->stop();
+
+#ifdef _WIN32
+  // cleanup when windows, there seems to be a difference
+  // in smart pointer implementation in std::map erase usage
+  for (int i = 0; i < nr_procs; i++)
+    delete processes[i];
+#endif //_WIN32
 }
