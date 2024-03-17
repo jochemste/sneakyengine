@@ -2,6 +2,7 @@
 #define DISPLAY_HPP
 
 #include <memory>
+#include <string>
 
 /// Interface to display
 class IDisplay {
