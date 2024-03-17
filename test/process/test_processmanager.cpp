@@ -5,6 +5,10 @@
 
 #include "mock_process.hpp"
 
+#include <array>
+#include <sstream>
+#include <string>
+
 using ::testing::_;
 using ::testing::Invoke;
 using ::testing::Return;

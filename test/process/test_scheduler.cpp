@@ -4,6 +4,7 @@
 
 #include "mock_process.hpp"
 
+#include <array>
 #include <vector>
 
 using ::testing::_;
