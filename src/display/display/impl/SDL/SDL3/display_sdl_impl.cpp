@@ -3,6 +3,8 @@
 #include "logging.hpp"
 #include "time.hpp"
 
+#include <string>
+
 namespace display {
   // Temporary constexpr. Data will be retrieved differently in future iteration
   constexpr const char *g_window_name = "SneakyEngine";

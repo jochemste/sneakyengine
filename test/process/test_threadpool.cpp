@@ -6,6 +6,9 @@
 
 #include "mock_process.hpp"
 
+#include <exception>
+#include <memory>
+
 using ::testing::_;
 using ::testing::AtLeast;
 using ::testing::Invoke;
@@ -60,7 +63,7 @@ TEST_F(TestThreadpool, TestThreadpoolSysNrThreadMultiProcess) {
   std::shared_ptr<MockProcess> process(
       new MockProcess(ProcessOwner::process_manager, "testProcess1"));
   threadpool::Threadpool_impl tp = threadpool::Threadpool_impl();
-  auto f = [](int id) { std::cout << "Testing " << id << std::endl; };
+  auto f                         = [](int id) {};
 
   for (int id = 0; id < 100; id++) {
     EXPECT_CALL(*process.get(), execute(id)).Times(1).WillOnce(Invoke(f));
@@ -88,7 +91,7 @@ TEST_F(TestThreadpool, TestThreadpoolSysNrThreadMultiProcessThrows) {
   std::shared_ptr<MockProcess> process(
       new MockProcess(ProcessOwner::process_manager, "testProcess1"));
   threadpool::Threadpool_impl tp = threadpool::Threadpool_impl();
-  auto f = [](int id) { std::cout << "Testing " << id << std::endl; };
+  auto f                         = [](int id) {};
 
   {
     testing::InSequence s;
@@ -120,7 +123,7 @@ TEST_F(TestThreadpool, TestThreadpoolSysNrThreadMultiProcessStopNoWait) {
   std::shared_ptr<MockProcess> process(
       new MockProcess(ProcessOwner::process_manager, "testProcess1"));
   threadpool::Threadpool_impl tp = threadpool::Threadpool_impl();
-  auto f = [](int id) { std::cout << "Testing " << id << std::endl; };
+  auto f                         = [](int id) {};
 
   EXPECT_CALL(*process.get(), execute(_))
       .Times(AtLeast(1))
@@ -144,16 +147,13 @@ TEST_F(TestThreadpool, TestThreadpoolSysNrThreadMultiProcessExecTimeDiff) {
   threadpool::Threadpool_impl tp = threadpool::Threadpool_impl();
   auto f1                        = [](int id) {
     int j = 1;
-    std::cout << "Testing " << id << std::endl;
     for (int i = 0; i < 10; i++)
       j *= i;
   };
   auto f2 = [](int id) {
     int j = 1;
-    std::cout << "Slow testing " << id << std::endl;
     for (int i = 0; i < 10000; i++)
       j *= i;
-    std::cout << "More stdoutput " << id << std::endl;
   };
 
   {

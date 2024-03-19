@@ -2,6 +2,7 @@
 #define DISPLAY_HPP
 
 #include <memory>
+#include <string>
 
 namespace display{
   /// Interface to display
@@ -23,6 +24,9 @@ namespace display{
   /// @brief General display exception class
   class DisplayException : public std::exception {
   public:
+    DisplayException()                              = delete;
+    DisplayException(const DisplayException &other) = delete;
+
     DisplayException(const char *message);
     DisplayException(const std::string &message);
     const char *what();
@@ -33,3 +37,4 @@ namespace display{
 
 }
 #endif // DISPLAY_HPP
+
