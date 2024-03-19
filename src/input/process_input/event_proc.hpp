@@ -2,10 +2,14 @@
 
 #include <memory>
 
-class EventHandlerProcessFactory {
-public:
-  EventHandlerProcessFactory(){};
+namespace input {
+  namespace process_input {
+    class EventHandlerProcessFactory {
+    public:
+      EventHandlerProcessFactory(){};
 
-  std::unique_ptr<IProcess> createProcess(const ProcessOwner &owner,
-                                          const std::string &name);
-};
+      std::unique_ptr<process::IProcess> createProcess(const process::ProcessOwner &owner,
+                                                       const std::string &name);
+    };
+  }
+}

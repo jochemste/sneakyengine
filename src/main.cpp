@@ -3,15 +3,15 @@
 #include "logging.hpp"
 
 int main(int /*argc*/, char ** /*argv*/) {
-  Log().set_loglevel(LogLevel::debug);
-  Log(LogLevel::debug) << LOG_START;
-  Log(LogLevel::debug) << LOG_HEADER << "Starting test application";
+  logging::Log().set_loglevel(logging::LogLevel::debug);
+  logging::Log(logging::LogLevel::debug) << logging::LOG_START;
+  logging::Log(logging::LogLevel::debug) << logging::LOG_HEADER << "Starting test application";
 
   Engine engine;
   int res = engine.run();
   if (res) {
-    Log(LogLevel::critical)
-        << LOG_HEADER << "An error occurred. Error code: " << res;
+    logging::Log(logging::LogLevel::critical)
+        << logging::LOG_HEADER << "An error occurred. Error code: " << res;
   }
   engine.stop();
 }
