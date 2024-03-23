@@ -16,10 +16,15 @@ public:
   /// Gets the subject id of the message. Subject id should be set by the
   /// server, to allow uniqueness. Used by subscriber, server and poster.
   virtual int get_subject_id() = 0;
-  /// Get the message content as a string. Used by subscriber.
-  virtual void get_message(std::string &message_str) = 0;
-  /// Get the message content as an int. Used by subscriber.
-  virtual void get_message(int &message_int) = 0;
+  /// Gets the message id, which is unique. Used by subscriber, server and
+  /// poster.
+  virtual int get_message_id() = 0;
+  /// Get the message content as a string. Returns false if failed.
+  /// Used by subscriber.
+  virtual bool get_message(std::string &message_str) = 0;
+  /// Get the message content as an int. Returns false if failed.
+  /// Used by subscriber.
+  virtual bool get_message(int &message_int) = 0;
   /// Get the type of the message content. To be used by the subscriber.
   virtual utils::types::type get_type() = 0;
 
@@ -29,9 +34,9 @@ public:
   /// within the context of the server.
   virtual void set_subject_id(const int &id) = 0;
   /// Set the message as a string. Should be used by the poster.
-  virtual void set_message(std::string &message_str) = 0;
+  virtual void set_message(const std::string &message_str) = 0;
   /// Set the message as a int. Should be used by the poster.
-  virtual void set_message(int &message_int) = 0;
+  virtual void set_message(const int &message_int) = 0;
 };
 
 /// Poster interface. To be used to send messages to subscribers through the
