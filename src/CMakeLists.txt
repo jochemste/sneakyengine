@@ -7,6 +7,7 @@ set(LINK_FOR_ALL ${LOGGING_LIB})
 
 # Follow order of dependencies
 add_subdirectory(utils)
+add_subdirectory(common)
 add_subdirectory(process)
 
 add_subdirectory(display)
