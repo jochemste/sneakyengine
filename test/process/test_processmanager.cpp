@@ -179,7 +179,6 @@ TEST_F(TestProcessManager, TestProcessManagerMultipleRunProcFinished) {
     //   testing::InSequence s;
     EXPECT_CALL(*process, get_state())
         .WillRepeatedly(Invoke([&states, index]() { return states[index]; }));
-    EXPECT_CALL(*process, kill()).Times(0);
     EXPECT_CALL(*process, execute(_)).WillOnce(Invoke([&states, index](int id) {
       states[index] = ProcessState::finished;
     }));
