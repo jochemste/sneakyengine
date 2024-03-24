@@ -3,6 +3,7 @@
 #include "logging.hpp"
 #include "types.hpp"
 
+#include <functional>
 #include <string>
 
 namespace common {
@@ -17,6 +18,7 @@ MessageImpl::MessageImpl()
   Log(LogLevel::debug) << LOG_END << " - Created message with id "
                        << m_message_id;
 }
+
 MessageImpl::MessageImpl(const std::string &subject) : MessageImpl() {
   Log(LogLevel::debug) << LOG_START;
   set_subject(subject);
@@ -45,7 +47,7 @@ const std::string MessageImpl::get_subject() {
   return m_subject;
 }
 
-int MessageImpl::get_subject_id() {
+unsigned long int MessageImpl::get_subject_id() {
   Log(LogLevel::debug) << LOG_START;
   Log(LogLevel::debug) << LOG_END;
 
@@ -107,27 +109,32 @@ utils::types::type MessageImpl::get_type() {
 void MessageImpl::set_subject(const std::string &subject) {
   Log(LogLevel::debug) << LOG_START;
 
+  // Ensure subjects are not set already
   if (m_subject_set) {
     Log(LogLevel::warning)
         << LOG_HEADER << "Subject was already set, cannot set subject anymore";
     Log(LogLevel::debug) << LOG_END;
     return;
   }
+
+  Log(LogLevel::debug) << LOG_HEADER << "Subject set to str '" << subject
+                       << "'";
   m_subject = subject;
 
+  // set subject id to hash of subject
+  long unsigned int hashed = m_subject_hasher(m_subject);
+  set_subject_id(hashed);
+
+  // Set to true, to make sure subject is only set once.
   m_subject_set = true;
 
-  Log(LogLevel::debug) << LOG_END;
-}
-
-void MessageImpl::set_subject_id(const int &id) {
-  Log(LogLevel::debug) << LOG_START;
   Log(LogLevel::debug) << LOG_END;
 }
 
 void MessageImpl::set_message(const std::string &message_str) {
   Log(LogLevel::debug) << LOG_START;
 
+  // Ensure messages are not set already
   if (m_message_set) {
     Log(LogLevel::warning)
         << LOG_HEADER << "Message was already set, cannot set message anymore";
@@ -135,10 +142,13 @@ void MessageImpl::set_message(const std::string &message_str) {
     return;
   }
 
+  Log(LogLevel::debug) << LOG_HEADER << "Message set to str '" << message_str
+                       << "'";
   m_type        = utils::types::e_STRING;
   m_message_str = message_str;
   m_message_int = -1;
 
+  // Set to true, to make sure message can only be set once.
   m_message_set = true;
 
   Log(LogLevel::debug) << LOG_END;
@@ -147,6 +157,7 @@ void MessageImpl::set_message(const std::string &message_str) {
 void MessageImpl::set_message(const int &message_int) {
   Log(LogLevel::debug) << LOG_START;
 
+  // Ensure messages are not set already.
   if (m_message_set) {
     Log(LogLevel::warning)
         << LOG_HEADER << "Message was already set, cannot set message anymore";
@@ -154,11 +165,22 @@ void MessageImpl::set_message(const int &message_int) {
     return;
   }
 
+  Log(LogLevel::debug) << LOG_HEADER << "Message set to int " << message_int;
   m_type        = utils::types::e_INT;
   m_message_str = "";
   m_message_int = message_int;
 
+  // Set to true, to make sure message can only be set once.
   m_message_set = true;
+
+  Log(LogLevel::debug) << LOG_END;
+}
+
+// PRIVATE
+void MessageImpl::set_subject_id(const unsigned long int &id) {
+  Log(LogLevel::debug) << LOG_START << " - Setting subject id to " << id;
+
+  m_subject_id = id;
 
   Log(LogLevel::debug) << LOG_END;
 }
