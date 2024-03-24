@@ -13,9 +13,10 @@ public:
   /// Gets the subject of the message as a string. Used by subscriber and
   /// server.
   virtual const std::string get_subject() = 0;
-  /// Gets the subject id of the message. Subject id should be set by the
-  /// server, to allow uniqueness. Used by subscriber, server and poster.
-  virtual int get_subject_id() = 0;
+  /// Gets the subject id of the message. Subject id is a hashed version of the
+  /// subject and is hashed by the implementation of IMessage. Used by
+  /// subscriber, server and poster.
+  virtual unsigned long int get_subject_id() = 0;
   /// Gets the message id, which is unique. Used by subscriber, server and
   /// poster.
   virtual int get_message_id() = 0;
@@ -30,9 +31,6 @@ public:
 
   /// Set the subject of the message. Should be set by the poster.
   virtual void set_subject(const std::string &subject) = 0;
-  /// Set the subject id. Should be set by the server and should be unique
-  /// within the context of the server.
-  virtual void set_subject_id(const int &id) = 0;
   /// Set the message as a string. Should be used by the poster.
   virtual void set_message(const std::string &message_str) = 0;
   /// Set the message as a int. Should be used by the poster.
