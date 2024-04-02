@@ -49,3 +49,4 @@ bin/test_engine
 **GPATH**
 /bin/
 **.gdb**
+/.cache/
