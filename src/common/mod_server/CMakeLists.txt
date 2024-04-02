@@ -21,10 +21,13 @@ target_link_libraries(
   ${LIBNAME}
   PRIVATE
   ${LINK_FOR_ALL}
+  ${MESSAGE_LIB}
   )
 target_include_directories(
   ${LIBNAME}
   PRIVATE
   ${INCLUDE_FOR_ALL}
   ${UTILS_INCLUDE}
+  ${MOD_SERVER_INCLUDE}
+  ${MESSAGE_INCLUDE}
   )
