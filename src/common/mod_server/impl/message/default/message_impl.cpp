@@ -64,12 +64,12 @@ bool MessageImpl::get_message(std::string &message_str) {
   Log(LogLevel::debug) << LOG_START;
 
   if (m_type == utils::types::e_STRING) {
-    Log(LogLevel::debug) << LOG_HEADER << "Setting message to: '" << message_str
+    Log(LogLevel::debug) << LOG_HEADER << "Getting message: '" << message_str
                          << "'";
     message_str = m_message_str;
   } else {
-    Log(LogLevel::warning) << LOG_HEADER << "Cannot set message to '"
-                           << message_str << "', type is not set to str";
+    Log(LogLevel::warning) << LOG_HEADER
+                           << "Cannot get message, type is not set to str";
     message_str = "";
     Log(LogLevel::debug) << LOG_END;
     return false;
@@ -84,11 +84,11 @@ bool MessageImpl::get_message(int &message_int) {
   Log(LogLevel::debug) << LOG_START;
 
   if (m_type == utils::types::e_INT) {
-    Log(LogLevel::debug) << LOG_HEADER << "Setting message to: " << message_int;
-    m_message_int = message_int;
+    Log(LogLevel::debug) << LOG_HEADER << "Getting message: " << message_int;
+    message_int = m_message_int;
   } else {
-    Log(LogLevel::warning) << LOG_HEADER << "Cannot set message to "
-                           << message_int << ", type is not set to int";
+    Log(LogLevel::warning) << LOG_HEADER
+                           << "Cannot set message, type is not set to int";
     message_int = -1;
     Log(LogLevel::debug) << LOG_END;
     return false;
