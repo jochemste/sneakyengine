@@ -1,3 +1,6 @@
+#ifndef SERVER_HPP
+#define SERVER_HPP
+
 #include <memory>
 #include <string>
 
@@ -73,3 +76,5 @@ public:
 };
 } // namespace mod_server
 } // namespace common
+
+#endif // SERVER_HPP
