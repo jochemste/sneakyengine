@@ -6,6 +6,7 @@ set(PROJECTNAME "sneakyengine")
 project (${PROJECTNAME} VERSION "0.0.1" LANGUAGES C CXX)
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/")
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "Generate compile_commands.json")
 
 message("Configuring build files for ${PROJECTNAME}")
 
