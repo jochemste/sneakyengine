@@ -10,6 +10,8 @@ set(SRCS
   process/test_threadpool.cpp
 
   mod_server/test_message.cpp
+
+  utils/test_hash.cpp
   )
 
 add_executable(
