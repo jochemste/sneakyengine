@@ -2,6 +2,7 @@
 
 #include "message_impl.hpp"
 
+#include "hash.hpp"
 #include "types.hpp"
 
 #include <functional>
@@ -10,10 +11,7 @@
 class TestMessageImplDefault : public ::testing::Test {
 public:
 protected:
-  unsigned long int get_hashed_subj() {
-    std::hash<std::string> hasher;
-    return hasher(m_subject);
-  }
+  hash::hash_t get_hashed_subj() { return hash::get_hash(m_subject); }
 
   const std::string m_subject     = "Some subject";
   const std::string m_message_str = "Some message string";
