@@ -18,7 +18,7 @@ public:
   ~MessageImpl();
 
   virtual const std::string get_subject() override;
-  virtual unsigned long int get_subject_id() override;
+  virtual hash::hash_t get_subject_id() override;
   virtual int get_message_id() override;
   virtual bool get_message(std::string &message_str) override;
   virtual bool get_message(int &message_int) override;
@@ -29,12 +29,12 @@ public:
   virtual void set_message(const int &message_int) override;
 
 private:
-  void set_subject_id(const unsigned long int &id);
+  void set_subject_id(const hash::hash_t &id);
 
   std::string m_subject;
   std::string m_message_str;
   int m_message_int;
-  unsigned long int m_subject_id;
+  hash::hash_t m_subject_id;
   utils::types::type m_type = utils::types::e_STRING;
   bool m_subject_set;
   bool m_message_set;

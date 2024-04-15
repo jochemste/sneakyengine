@@ -47,7 +47,7 @@ const std::string MessageImpl::get_subject() {
   return m_subject;
 }
 
-unsigned long int MessageImpl::get_subject_id() {
+hash::hash_t MessageImpl::get_subject_id() {
   Log(LogLevel::debug) << LOG_START;
   Log(LogLevel::debug) << LOG_END;
 
@@ -177,7 +177,7 @@ void MessageImpl::set_message(const int &message_int) {
 }
 
 // PRIVATE
-void MessageImpl::set_subject_id(const unsigned long int &id) {
+void MessageImpl::set_subject_id(const hash::hash_t &id) {
   Log(LogLevel::debug) << LOG_START << " - Setting subject id to " << id;
 
   m_subject_id = id;
