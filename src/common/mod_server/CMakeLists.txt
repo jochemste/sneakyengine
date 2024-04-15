@@ -9,6 +9,8 @@ set(SRCS
   module_server.cpp
   )
 
+# Add library directories
+add_subdirectory(libs/subscr_admin)
 # Add implementation directory
 add_subdirectory(impl)
 
