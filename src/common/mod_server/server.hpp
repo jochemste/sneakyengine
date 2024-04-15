@@ -4,6 +4,7 @@
 #include <memory>
 #include <string>
 
+#include "hash.hpp"
 #include "types.hpp"
 
 namespace common {
@@ -19,7 +20,7 @@ public:
   /// Gets the subject id of the message. Subject id is a hashed version of the
   /// subject and is hashed by the implementation of IMessage. Used by
   /// subscriber, server and poster.
-  virtual unsigned long int get_subject_id() = 0;
+  virtual hash::hash_t get_subject_id() = 0;
   /// Gets the message id, which is unique. Used by subscriber, server and
   /// poster.
   virtual int get_message_id() = 0;
@@ -53,6 +54,7 @@ public:
 
 class ISubscriber {
 public:
+  virtual hash::hash_t get_id()                               = 0;
   virtual bool has_message()                                  = 0;
   virtual void set_message(std::shared_ptr<IMessage> message) = 0;
   virtual std::shared_ptr<IMessage> get_message()             = 0;
@@ -62,10 +64,23 @@ public:
 /// subscriber for the purpose of communicating between modules/submodules.
 class IServer {
 public:
+  /// Post a message. Subscribers to the subject of the message will be
+  /// notified.
   virtual void post(const std::shared_ptr<IPoster> poster,
                     std::shared_ptr<IMessage> message) = 0;
-  virtual void subscribe(std::shared_ptr<ISubscriber> observer,
-                         const std::string &subject)   = 0;
+  /// Subscribe to a subject. Subscriber will be notified when a message with
+  /// that subject becomes available.
+  virtual void subscribe(std::shared_ptr<ISubscriber> subscriber,
+                         const std::string &subject) = 0;
+
+  /// Unsubscribe subscriber to indicate that references to the subscriber can
+  /// be removed.
+  virtual void unsubscribe(hash::hash_t subscriber_id) = 0;
+
+  /// Check if a subject has subscribers, to check that your message will
+  /// actually be received. Messages are not stored when no subscribers are
+  /// present.
+  virtual bool has_subscribers(const std::string &subject) = 0;
 };
 
 /// Factory to create a message.
