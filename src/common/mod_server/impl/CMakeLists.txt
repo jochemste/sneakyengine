@@ -4,4 +4,4 @@ add_subdirectory(message)
 
 #add_subdirectory(subscriber)
 
-#add_subdirectory(server)
+add_subdirectory(server)
