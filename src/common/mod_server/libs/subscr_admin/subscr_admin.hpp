@@ -1,6 +1,7 @@
 #ifndef SUBSCR_ADMIN
 #define SUBSCR_ADMIN
 
+#include "hash.hpp"
 #include "server.hpp"
 
 #include <map>
@@ -17,7 +18,7 @@ using ISubscr_ptr = std::shared_ptr<csrv::ISubscriber>;
 class SubscriberAdmin {
 public:
   bool add_subscriber(const std::string &subject, ISubscr_ptr subscriber);
-  bool remove_subscriber(unsigned long int subscriber_id);
+  bool remove_subscriber(hash::hash_t subscriber_id);
 
   std::vector<ISubscr_ptr> get_subscribers(const std::string &subject);
 
@@ -26,7 +27,7 @@ public:
   bool contains_subject(const std::string &subject);
 
 private:
-  std::unordered_map<unsigned long int, std::vector<ISubscr_ptr>> m_admin_map;
+  std::unordered_map<hash::hash_t, std::vector<ISubscr_ptr>> m_admin_map;
 };
 
 } // namespace subscr_admin

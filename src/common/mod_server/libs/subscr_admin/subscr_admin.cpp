@@ -21,7 +21,21 @@ bool SubscriberAdmin::add_subscriber(const std::string &subject,
 
   return true;
 }
-bool SubscriberAdmin::remove_subscriber(unsigned long int subscriber_id) {}
+
+bool SubscriberAdmin::remove_subscriber(hash::hash_t subscriber_id) {
+  for (auto &[id, subscr_vec] : m_admin_map) {
+    for (auto it = subscr_vec.begin(); it != subscr_vec.end(); it++) {
+      if ((*it)->get_id() == subscriber_id) {
+        // Found instance. Deleting and returning success
+        subscr_vec.erase(it);
+        return true;
+      }
+    }
+  }
+
+  // Failed to find instance to delete
+  return false;
+}
 
 std::vector<ISubscr_ptr>
 SubscriberAdmin::get_subscribers(const std::string &subject) {}
