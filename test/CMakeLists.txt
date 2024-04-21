@@ -10,6 +10,7 @@ set(SRCS
   process/test_threadpool.cpp
 
   mod_server/test_message.cpp
+  mod_server/test_subscr_admin.cpp
 
   utils/test_hash.cpp
   )
@@ -30,6 +31,7 @@ target_link_libraries(
   ${THREADPOOL_LIB}
   ${MESSAGE_LIB}
   ${MOD_SERVER_LIB}
+  ${SUBSCR_ADMIN_LIB}
   )
 
 target_include_directories(
@@ -44,6 +46,7 @@ target_include_directories(
   ${THREADPOOL_INCLUDE}
   ${MESSAGE_INCLUDE}
   ${MOD_SERVER_INCLUDE}
+  ${SUBSCR_ADMIN_INCLUDE}
   )
 
 include(GoogleTest)
