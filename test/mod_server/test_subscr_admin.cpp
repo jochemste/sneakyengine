@@ -177,6 +177,9 @@ TEST_F(TestSubscrAdmin, TestRemoveMultiSubscribersMultiSubjects) {
   const int multi = 42; // random nr for how many subscribers to create
   std::vector<subptr_t> subscr_v = {};
 
+  size_t subj_i                     = 0;
+  std::vector<std::string> subjects = {"subj1", "subj2", "subj3"};
+
   hash::hash_t start_id         = 42; // ID to start counting from
   std::vector<hash::hash_t> ids = {}; // vector to store unique IDs
   std::vector<bool> r_add{}; // results of adding
@@ -196,8 +199,10 @@ TEST_F(TestSubscrAdmin, TestRemoveMultiSubscribersMultiSubjects) {
   ASSERT_NO_THROW({
     int i = 0;
     for (auto &sub : subscr_v) {
-      r_add.push_back(sa.add_subscriber("TestSubject", sub));
+      r_add.push_back(sa.add_subscriber(subjects.at(subj_i++), sub));
       r_rm.push_back(sa.remove_subscriber(ids.at(i++)));
+      if (subj_i >= subjects.size())
+        subj_i = 0;
     }
   });
 
@@ -211,27 +216,54 @@ TEST_F(TestSubscrAdmin, TestRemoveMultiSubscribersMultiSubjects) {
   }
 }
 
-// TEST_F(TestSubscrAdmin, TestAddMultiSubscribersNewSubjects) {
-//   subscr_admin::SubscriberAdmin sa;
-//   std::shared_ptr<MockSubscriber> sub1;
-//   std::shared_ptr<MockSubscriber> sub2;
-//   std::shared_ptr<MockSubscriber> sub3;
-//   std::shared_ptr<MockSubscriber> sub4;
-
-//   ASSERT_NO_THROW({
-//     sa.add_subscriber("TestSubject", sub1);
-//     sa.add_subscriber("TestSubject2", sub2);
-//     sa.add_subscriber("TestSubject2", sub3);
-//     sa.add_subscriber("TestSubject", sub4);
-//   });
-// }
-
 TEST_F(TestSubscrAdmin, TestContainsSubject) {
+  using subptr_t = std::shared_ptr<MockSubscriber>;
   subscr_admin::SubscriberAdmin sa;
-  std::shared_ptr<MockSubscriber> sub1;
-  const std::string subject = "TestSubject";
+  std::vector<subptr_t> subscr_v = {};
 
-  sa.add_subscriber(subject, sub1);
+  std::vector<std::string> subjects = {"subj1", "subj2", "subj3"};
+  for (size_t i = 0; i < subjects.size(); i++) {
+    subscr_v.push_back(std::make_shared<MockSubscriber>());
+  }
 
-  EXPECT_TRUE(sa.contains_subject(subject));
+  for (size_t i = 0; i < subjects.size(); i++) {
+    sa.add_subscriber(subjects.at(i), subscr_v.at(i));
+  }
+
+  for (const auto &subject : subjects) {
+    EXPECT_TRUE(sa.contains_subject(subject));
+  }
+}
+
+TEST_F(TestSubscrAdmin, TestSubjectGetsDeleted) {
+  using subptr_t = std::shared_ptr<MockSubscriber>;
+  subscr_admin::SubscriberAdmin sa;
+  std::vector<subptr_t> subscr_v = {};
+  size_t del_subj                = 1; // subject to expect to be deleled
+  int del_subscr                 = 1; // subscriber to delete
+
+  std::vector<std::string> subjects = {"subj1", "subj2", "subj3"};
+
+  for (size_t i = 0; i < subjects.size(); i++) {
+    subscr_v.push_back(std::make_shared<MockSubscriber>());
+  }
+
+  // Setup expectations and IDs
+  for (size_t i = 0; i < subscr_v.size(); i++) {
+    EXPECT_CALL(*(subscr_v.at(i)).get(), get_id())
+        .WillRepeatedly(Return(static_cast<hash::hash_t>(i)));
+  }
+
+  for (size_t i = 0; i < subjects.size(); i++) {
+    sa.add_subscriber(subjects.at(i), subscr_v.at(i));
+  }
+
+  sa.remove_subscriber(del_subscr);
+
+  for (size_t i = 0; i < subjects.size(); i++) {
+    if (i == del_subj)
+      EXPECT_FALSE(sa.contains_subject(subjects.at(i)));
+    else
+      EXPECT_TRUE(sa.contains_subject(subjects.at(i)));
+  }
 }
