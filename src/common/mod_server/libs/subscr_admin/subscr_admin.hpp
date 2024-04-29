@@ -18,11 +18,11 @@ using ISubscr_ptr = std::shared_ptr<csrv::ISubscriber>;
 class SubscriberAdmin {
 public:
   bool add_subscriber(const std::string &subject, ISubscr_ptr subscriber);
-  bool remove_subscriber(hash::hash_t subscriber_id);
+  bool remove_subscriber(const hash::hash_t &subscriber_id);
 
   std::vector<ISubscr_ptr> get_subscribers(const std::string &subject);
 
-  ISubscr_ptr get_subscriber(const int &subscr_id);
+  ISubscr_ptr get_subscriber(const hash::hash_t &subscriber_id);
 
   bool contains_subject(const std::string &subject);
 
