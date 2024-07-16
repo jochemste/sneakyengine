@@ -7,6 +7,9 @@
 
 #include "mock_subscriber.hpp"
 
+#include <sstream>
+#include <string>
+
 using ::testing::Return;
 
 class TestSubscrAdmin : public ::testing::Test {
@@ -239,7 +242,7 @@ TEST_F(TestSubscrAdmin, TestSubjectGetsDeleted) {
   using subptr_t = std::shared_ptr<MockSubscriber>;
   subscr_admin::SubscriberAdmin sa;
   std::vector<subptr_t> subscr_v = {};
-  size_t del_subj                = 1; // subject to expect to be deleled
+  size_t del_subj                = 1; // subject to expect to be deleted
   int del_subscr                 = 1; // subscriber to delete
 
   std::vector<std::string> subjects = {"subj1", "subj2", "subj3"};
@@ -255,7 +258,7 @@ TEST_F(TestSubscrAdmin, TestSubjectGetsDeleted) {
   }
 
   for (size_t i = 0; i < subjects.size(); i++) {
-    sa.add_subscriber(subjects.at(i), subscr_v.at(i));
+    ASSERT_TRUE(sa.add_subscriber(subjects.at(i), subscr_v.at(i)));
   }
 
   sa.remove_subscriber(del_subscr);
@@ -265,5 +268,63 @@ TEST_F(TestSubscrAdmin, TestSubjectGetsDeleted) {
       EXPECT_FALSE(sa.contains_subject(subjects.at(i)));
     else
       EXPECT_TRUE(sa.contains_subject(subjects.at(i)));
+  }
+}
+
+TEST_F(TestSubscrAdmin, TestGetSubscriberSingleSubscriber) {
+  using subptr_t = std::shared_ptr<MockSubscriber>;
+  subscr_admin::SubscriberAdmin sa;
+  subptr_t subscr        = std::make_shared<MockSubscriber>();
+  const std::string subj = "subj1";
+  const hash::hash_t id  = 42;
+
+  EXPECT_CALL(*(subscr).get(), get_id()).WillRepeatedly(Return(id));
+
+  ASSERT_TRUE(sa.add_subscriber(subj, subscr));
+
+  auto subscrExists = sa.get_subscriber(id);
+  auto subscrNull   = sa.get_subscriber(id + 1);
+
+  EXPECT_EQ(subscr, subscrExists);
+  EXPECT_EQ(nullptr, subscrNull);
+}
+
+TEST_F(TestSubscrAdmin, TestGetSubscriberMultiSubscriber) {
+  using subptr_t = std::shared_ptr<MockSubscriber>;
+  subscr_admin::SubscriberAdmin sa;
+  std::vector<subptr_t> subscr_v = {};
+  int loops                      = 42;
+  int multi                      = 4;
+  int del_subscr                 = 42;
+
+  std::vector<std::string> subjects = {};
+
+  for (int i = 0; i < loops; i++) {
+    std::stringstream ss;
+    ss << "subj" << i;
+    subjects.push_back(ss.str());
+  }
+
+  for (size_t i = 0; i < subjects.size() * multi; i++) {
+    subscr_v.push_back(std::make_shared<MockSubscriber>());
+  }
+
+  // Setup expectations and IDs
+  for (size_t i = 0; i < subscr_v.size(); i++) {
+    EXPECT_CALL(*(subscr_v.at(i)).get(), get_id())
+        .WillRepeatedly(Return(static_cast<hash::hash_t>(i)));
+  }
+
+  int j     = 0;
+  int limit = multi;
+  for (size_t i = 0; i < subjects.size(); i++) {
+    for (; j < limit; j++) {
+      ASSERT_TRUE(sa.add_subscriber(subjects.at(i), subscr_v.at(j)));
+    }
+    limit += multi;
+  }
+
+  for (size_t i = 0; i < subjects.size(); i++) {
+    EXPECT_EQ(sa.get_subscribers(subjects.at(i)).size(), multi);
   }
 }
