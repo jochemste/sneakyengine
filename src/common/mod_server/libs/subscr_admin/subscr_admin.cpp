@@ -9,7 +9,7 @@
 
 namespace subscr_admin {
 
-using ISubscr_ptr = std::shared_ptr<csrv::ISubscriber>;
+using ISubscr_ptr = std::shared_ptr<common::mod_server::ISubscriber>;
 
 bool SubscriberAdmin::add_subscriber(const std::string &subject,
                                      ISubscr_ptr subscriber) {

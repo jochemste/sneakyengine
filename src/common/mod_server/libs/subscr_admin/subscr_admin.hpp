@@ -9,12 +9,12 @@
 #include <string>
 #include <vector>
 
-namespace csrv = common::mod_server;
-
 namespace subscr_admin {
 
-using ISubscr_ptr = std::shared_ptr<csrv::ISubscriber>;
+using ISubscr_ptr = std::shared_ptr<common::mod_server::ISubscriber>;
 
+/// @brief Class to keep an administration of subscribers. To be used by the
+/// server to keep track of subscribers belonging to a specific subject
 class SubscriberAdmin {
 public:
   bool add_subscriber(const std::string &subject, ISubscr_ptr subscriber);
