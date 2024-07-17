@@ -295,7 +295,6 @@ TEST_F(TestSubscrAdmin, TestGetSubscriberMultiSubscriber) {
   std::vector<subptr_t> subscr_v = {};
   int loops                      = 42;
   int multi                      = 4;
-  int del_subscr                 = 42;
 
   std::vector<std::string> subjects = {};
 
